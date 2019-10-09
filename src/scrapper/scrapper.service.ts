@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as cheerio from 'cheerio';
-import * as puppeteer from 'puppeteer';
 import * as request from 'request';
-import * as querystring from 'querystring';
+import { eachLimit } from 'async';
 
 @Injectable()
 export class ScrapperService {
@@ -10,30 +9,66 @@ export class ScrapperService {
     constructor() {
     }
 
- 
     async scrapeUrl(data): Promise<any> {
-        let allitems = [];
-        let url = data.url;
-        let qs = 'method=FilterCasinos&FilterCasinosParams[resultsType]=reviews/all-online-casinos&FilterCasinosParams[resultsSubtype]=&FilterCasinosParams[userOptions][country]=false&FilterCasinosParams[userOptions][medals][gold]=false&FilterCasinosParams[userOptions][medals][silver]=false&FilterCasinosParams[userOptions][medals][bronze]=false&FilterCasinosParams[userOptions][medals][black]=false&FilterCasinosParams[userOptions][freeBonus]=false&FilterCasinosParams[userOptions][tags][BST]=false&FilterCasinosParams[userOptions][tags][POP]=false&FilterCasinosParams[userOptions][tags][NEW]=false&FilterCasinosParams[userOptions][tags][WRN]=false&FilterCasinosParams[userOptions][tags][BLC]=false&FilterCasinosParams[userOptions][tags][EXC]=false&FilterCasinosParams[userOptions][sortBy]=false&FilterCasinosParams[userOptions][offset]=500&FilterCasinosParams[userOptions][gamesWithoutFreePlay]=false';
+        let url = 'https://casino.guru/casinoFilterServiceMore?page=';
+        let urls = [];
+        let all = [];
+        for (let i = 0; i < 227; i++) {
+            urls.push(url + (i + 1));
+        }
+        return new Promise((resolve, reject) => {
+            // assuming openFiles is an array of file names
+            eachLimit(urls, 100, (url, callback) => {
 
-        return new Promise(async (resolve, reject) => {
+                this.processUrl(url).then((result) => {
+                    all = all.concat(result);
+                    callback();
+                }).catch((error) => {
+                    callback(error);
+                });
+
+            }, (err) => {
+                if (err) {
+                    return console.log('ERROR', err);
+                } else {
+                    console.log(all.length);
+                    resolve(all);
+                }
+            });
+        });
+
+
+    }
+
+    processUrl(url) {
+        return new Promise((resolve, reject) => {
             request.post({
                 uri: url,
-                form: querystring.parse(qs)
+                form: {
+                    tab: 'ALL'
+                }
             }, function (error, response, body) {
+                if (error) return reject(error);
                 const $ = cheerio.load(body);
-
                 const items = [];
-                $('.casino-list-row-casino > a').each(function () {
+                console.log(url, $('.casino-card').length);
+                $('.casino-card').each(function(){
                     items.push({
-                        title: $(this).text(),
-                        href: $(this).attr('href')
+                        title: $(this).find('.casino-card-heading a').text(),
+                        href: $(this).find('.casino-card-heading a').attr('href'),
+                        image:  $(this).find('.casino-card-logo img').attr('src')
                     });
-                    resolve(items);
                 });
+                resolve(items);
             });
+
         });
     }
 
+
+
 }
+
+
+
 

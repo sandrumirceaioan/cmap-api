@@ -7,7 +7,7 @@ export class ScrapperController {
     
     constructor(private readonly scrapperService: ScrapperService){}
 
-    @Post('/url')
+    @Post('/casino-guru-main-list') // https://casino.guru/casinoFilterServiceMore?page=1
     async scrape(@Body() data){
         return this.scrapperService.scrapeUrl(data);
     }

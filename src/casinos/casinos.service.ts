@@ -12,7 +12,7 @@ export class CasinosService {
         @InjectModel('Casino') private readonly casinoModel: Model<Casino>
     ) { }
 
-    async add(casino: Casino): Promise<Casino> {
+    async add(casino): Promise<Casino> {
         let newCasino = new this.casinoModel(casino);
         let response = newCasino.save();
         return response;

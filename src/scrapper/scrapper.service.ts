@@ -19,7 +19,7 @@ export class ScrapperService {
         let url = 'https://casino.guru/casinoFilterServiceMore?page=';
         let urls = [];
         let all = [];
-        for (let i = 0; i < 227; i++) {
+        for (let i = 0; i < 22; i++) {
             urls.push(url + (i + 1));
         }
         return new Promise((resolve, reject) => {

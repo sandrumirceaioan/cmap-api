@@ -19,7 +19,7 @@ export class ScrapperService {
         let url = 'https://casino.guru/casinoFilterServiceMore?page=';
         let urls = [];
         let all = [];
-        for (let i = 0; i < 227; i++) {
+        for (let i = 0; i < 22; i++) {
             urls.push(url + (i + 1));
         }
         return new Promise((resolve, reject) => {
@@ -72,7 +72,8 @@ export class ScrapperService {
     saveCasino(casinos) {
         let savedCasinos = [];
         return new Promise((resolve, reject) => {
-            eachLimit(casinos, 10, async (cs, callback) => {
+            eachLimit(casinos, 5, async (cs, callback) => {
+
                 let casino = await this.casinosService.add({
                     casinoName: cs.title,
                     casinoUrlDetails: cs.href,
@@ -98,9 +99,9 @@ export class ScrapperService {
 
     async uploadFile(document, fileName) {
         return new Promise(async (resolve, reject) => {
-            let filePath = '/downloads/';
+            let filePath = '/assets/casinos/';
 
-            if (!fs.existsSync(join(process.cwd(), filePath))) fs.mkdirSync(join(process.cwd(), filePath));
+            if (!fs.existsSync(join(process.cwd(), filePath))) fs.mkdirSync(join(process.cwd(), filePath), { recursive: true });
 
             let fullPath = join(process.cwd(), filePath, fileName);
 

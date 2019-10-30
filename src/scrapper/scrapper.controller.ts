@@ -1,15 +1,24 @@
 import { Controller, Post, Get, Put, Body, Query, Param } from '@nestjs/common';
-import { ScrapperService } from './scrapper.service';
+import { ScrapperCasinoGuruService } from './scrapper-casinoguru.service';
+import { ScrapperAskGamblersService } from './scrapper-askgamblers.service';
 
 @Controller('scrapper')
 export class ScrapperController {
 
     
-    constructor(private readonly scrapperService: ScrapperService){}
+    constructor(
+        private readonly scrapperCasinoGuruService: ScrapperCasinoGuruService,
+        private readonly scrapperAskGamblersService: ScrapperAskGamblersService
+        ){}
 
-    @Post('/casino-guru-main-list') // https://casino.guru/casinoFilterServiceMore?page=1
-    async scrape(@Body() data){
-        return this.scrapperService.scrapeUrl(data);
+    @Post('/casinoguru')
+    async scrapeGuru(@Body() data){
+        return this.scrapperCasinoGuruService.scrapeUrl(data);
+    }
+
+    @Post('/askgamblers')
+    async scrapeGamblers(@Body() data){
+        return this.scrapperAskGamblersService.scrapeUrl(data);
     }
 
 }

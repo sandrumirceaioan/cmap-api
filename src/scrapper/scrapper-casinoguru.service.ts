@@ -9,7 +9,7 @@ import * as fetch from 'node-fetch';
 import { resolve } from 'dns';
 
 @Injectable()
-export class ScrapperService {
+export class ScrapperCasinoGuruService {
 
     constructor(
         private casinosService: CasinosService
@@ -20,7 +20,7 @@ export class ScrapperService {
         let url = 'https://casino.guru/casinoFilterServiceMore?page=';
         let urls = [];
         let all = [];
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 227; i++) {
             urls.push(url + (i + 1));
         }
         return new Promise((resolve, reject) => {
@@ -89,15 +89,15 @@ export class ScrapperService {
                 let fn = parsedSrc.origin + parsedSrc.pathname;
                 let originalFileName = parsedSrc.pathname.split('/')[3] + '.jpg';
 
-                let casino = await this.casinosService.add({
-                    casinoName: cs.title,
-                    casinoUrlDetails: cs.href,
-                    casinoLogo: originalFileName
-                });
+                // let casino = await this.casinosService.add({
+                //     casinoName: cs.title,
+                //     casinoUrlDetails: cs.href,
+                //     casinoLogo: originalFileName
+                // });
 
                 await this.uploadFile(fn, originalFileName);
 
-                return Promise.resolve(casino);
+                return Promise.resolve(originalFileName);
             }, (err, result) => {
                 if (err) {
                     return console.log('SCRAPE ERROR', err);

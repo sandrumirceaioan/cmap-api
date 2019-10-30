@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import * as request from 'request';
-import { eachLimit } from 'async';
+import { eachLimit, mapLimit } from 'async';
 import { CasinosService } from '../casinos/casinos.service';
 import * as fs from 'fs';
 import { join, posix } from 'path';
 import * as fetch from 'node-fetch';
+import { resolve } from 'dns';
 
 @Injectable()
 export class ScrapperService {
@@ -19,7 +20,7 @@ export class ScrapperService {
         let url = 'https://casino.guru/casinoFilterServiceMore?page=';
         let urls = [];
         let all = [];
-        for (let i = 0; i < 22; i++) {
+        for (let i = 0; i < 1; i++) {
             urls.push(url + (i + 1));
         }
         return new Promise((resolve, reject) => {
@@ -27,18 +28,29 @@ export class ScrapperService {
                 this.processUrl(url).then((result) => {
                     this.saveCasino(result).then((cas) => {
                         all = all.concat(cas);
+                        callback();
                     });
-                    callback();
                 }).catch((error) => {
                     callback(error);
                 });
-            }, (err) => {
+            }, async (err) => {
                 if (err) {
                     return console.log('SCRAPE ERROR', err);
                 } else {
-                    resolve(all);
+                    let data = await this.scrapePages(all);
+                    resolve(data);
                 }
             });
+        });
+    }
+
+    scrapePages(list) {
+        return new Promise((resolve, reject) => {
+
+
+            console.log('list: ', list);
+
+            resolve(list);
         });
     }
 
@@ -70,34 +82,33 @@ export class ScrapperService {
     }
 
     saveCasino(casinos) {
-        let savedCasinos = [];
         return new Promise((resolve, reject) => {
-            eachLimit(casinos, 5, async (cs, callback) => {
+            mapLimit(casinos, 5, async (cs) => {
+
+                let parsedSrc = new URL(cs.image.toString());
+                let fn = parsedSrc.origin + parsedSrc.pathname;
+                let originalFileName = parsedSrc.pathname.split('/')[3] + '.jpg';
 
                 let casino = await this.casinosService.add({
                     casinoName: cs.title,
                     casinoUrlDetails: cs.href,
-                    casinoLogo: cs.image
+                    casinoLogo: originalFileName
                 });
-                let parsedSrc = new URL(casino.casinoLogo.toString());
-                if (casino) {
-                    let fn = parsedSrc.origin + parsedSrc.pathname;
-                    let originalFileName = parsedSrc.pathname.split('/')[3] + '.jpg';
-                    let uploaded = await this.uploadFile(fn, originalFileName);
-                }
-                savedCasinos = savedCasinos.concat(casino);
+
+                await this.uploadFile(fn, originalFileName);
+
                 return Promise.resolve(casino);
-            }, (err) => {
+            }, (err, result) => {
                 if (err) {
                     return console.log('SCRAPE ERROR', err);
                 } else {
-                    return Promise.resolve(savedCasinos);
+                    resolve(result);
                 }
             });
         });
     }
 
-    async uploadFile(document, fileName) {
+    uploadFile(document, fileName) {
         return new Promise(async (resolve, reject) => {
             let filePath = '/assets/casinos/';
 
@@ -116,13 +127,13 @@ export class ScrapperService {
                 response.body.pipe(writer);
                 writer.on('finish', async (result) => {
                     writer.end();
+                    resolve();
                 });
                 writer.on('error', (error) => {
                     resolve();
                     writer.end();
                 });
             });
-
 
         });
     }

@@ -8,6 +8,12 @@ import { join, posix } from 'path';
 import * as fetch from 'node-fetch';
 import * as puppeteer from 'puppeteer';
 
+const chromeOptions = {
+    headless: false,
+    defaultViewport: null,
+    ignoreHTTPSErrors: true
+};
+
 @Injectable()
 export class ScrapperAskGamblersService {
 
@@ -20,13 +26,14 @@ export class ScrapperAskGamblersService {
         let urls = [];
         urls[0] = 'https://www.askgamblers.com/online-casino-reviews'
         let all = [];
-        for (let i = 1; i < 5; i++) {
+        for (let i = 1; i < 1; i++) {
             urls.push(urls[0] + '/' + (i + 1));
         }
 
         return new Promise((resolve, reject) => {
             eachLimit(urls, 10, (url, callback) => {
                 this.processUrl(url).then((result) => {
+                    all = all.concat(result);
                     // this.saveCasino(result).then((cas) => {
                     //     all = all.concat(cas);
                     //     callback();
@@ -50,7 +57,7 @@ export class ScrapperAskGamblersService {
     scrapePages(list) {
         return new Promise((resolve, reject) => {
 
-            mapLimit(list, 5, async (item) => {
+            mapLimit(list, 8, async (item) => {
 
                 let oneCasino = await this.processOne(item);
                 return Promise.resolve(oneCasino);
@@ -67,75 +74,56 @@ export class ScrapperAskGamblersService {
     }
 
     processOne(item) {
-        return new Promise((resolve, reject) => {
-            request.post({
-                uri: item,
-            }, function (error, response, body) {
-                if (error) return reject(error);
-                const $ = cheerio.load(body);
-                const items = [];
-                $('.casino-card').each(function () {
-                    let status = $(this).find('.text-bold strong').text();
-                    if (status != 'closed') {
-                        items.push({
-                            title: $(this).find('.casino-card-heading a').text().replace("[\\n\\r\\t]+", ""),
-                            href: $(this).find('.casino-card-heading a').attr('href'),
-                            image: $(this).find('.casino-card-logo img').attr('src')
-                        });
-                    }
-                });
-                resolve(items);
+        return new Promise(async (resolve, reject) => {
+            const browser = await puppeteer.launch(chromeOptions);
+            const page = await browser.newPage();
+
+            await page.goto('https://www.askgamblers.com' + item.casinoUrlDetails, {
+                waitUntil: 'load', timeout: 0 });
+            let html = await page.content();
+            const $ = cheerio.load(html);
+            item['casinoLogo'] = $('.ch-main').find('.ch-main__logo').attr('src');
+            item['casinoReputation'] = $('.ch-main').find('.ch-rating').text().replace(/\n/g, '').trim().split(' ')[0];
+            item['casinoBonusesUrl'] = $('#casinoBonuses').find('.top10__all').attr('href');
+            item['casinoPlayUrl'] = $('.ch-main').find('.ch-cta-inline-buttons__play-now-container a').first().attr('href');
+            let positives = [];
+            let negatives = [];
+            $('.review-main__content').find('.review-pros li').each(function () {
+                positives.push($(this).text());
             });
+            $('.review-main__content').find('.review-cons li').each(function () {
+                negatives.push($(this).text());
+            });
+            item['casinoSpecs'] = { negatives, positives };
+            console.log(positives, negatives);
+            await browser.close();
+            resolve(item);
         });
     }
 
     processUrl(url) {
         console.log(url);
         console.log('----------------------------------');
-        const chromeOptions = {
-            headless: false,
-            defaultViewport: null
-        };
 
         return new Promise(async (resolve, reject) => {
-
+            let casinos = [];
             const browser = await puppeteer.launch(chromeOptions);
             const page = await browser.newPage();
-     
+
             await page.goto(url);
             let html = await page.content();
-        
+
             const $ = cheerio.load(html);
             $('.card__desc').each(function () {
-                let title = $(this).find('.title').text();
-                console.log(title);
+                casinos.push({
+                    casinoName: $(this).find('.title').text(),
+                    casinoScore: $(this).find('.star-rating--after').text(),
+                    casinoUrlDetails: $(this).find('a').first().attr('href')
+                });
             });
 
-    
             await browser.close();
-
-            // const browser = await puppeteer.launch(chromeOptions);
-            // try {
-            //     puppeteer
-            //         .launch(chromeOptions)
-            //         .then(browser => browser.newPage())
-            //         .then(page => {
-            //             return page.goto(url).then(function () {
-            //                 return page.content();
-            //             });
-            //         })
-            //         .then(html => {
-            //             const $ = cheerio.load(html);
-            //             $('.card__desc').each(function () {
-            //                 let title = $(this).find('.title').text();
-            //                 console.log(title);
-            //             });
-            //             resolve();
-            //         })
-            //         .catch(console.error);
-            // } finally {
-            //     browser.close();
-            // }
+            resolve(casinos);
         });
     }
 
@@ -193,6 +181,21 @@ export class ScrapperAskGamblersService {
     //             });
     //         });
 
+    //     });
+    // }
+
+    // getCasinoRealUrl(fakeUrl) {
+    //     let link = 'https://www.askgamblers.com' + fakeUrl;
+    //     let realUrl;
+    //     return new Promise(async (resolve, reject) => {
+    //         const browser = await puppeteer.launch(chromeOptions);
+    //         const page = await browser.newPage();
+    //         const response = await page.goto(link);
+    //         console.log(response.status());
+    //         const redirects = await response.request().redirectChain();
+    //         realUrl = redirects[0].url();
+    //         await browser.close();
+    //         resolve(realUrl);
     //     });
     // }
 

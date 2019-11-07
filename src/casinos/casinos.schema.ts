@@ -4,13 +4,12 @@ export const CasinosSchema = new mongoose.Schema({
     // casino.guru
     casinoName: String,
     casinoUrlDetails: String, // to be used and removed
-    // casinoUrlVisit: String, 
-    // casinoUrlBonus: String, // to be used and replaced
+    casinoPlayUrl: String,
     casinoLogo: String,
-    // casinoSpecs: { positives: [], negatives: [], interesting: [] },
-    // casinoScore: [], // new collection same as casinoReviews
+    casinoSpecs: { positives: [], negatives: [] },
+    casinoScore: String,
     // casinoVotes: { up: Number, down: Number },
-    // casinoReputation: String, // bad, acceptable, good, very-good, perfect
+    casinoReputation: String, // bad, acceptable, good, very-good, perfect
     // // casino.guru details
     // casinoVpnUsage: Boolean,
     // casinoLanguages: [],
@@ -22,6 +21,7 @@ export const CasinosSchema = new mongoose.Schema({
     // casinoLicensingAuthorities: [], // {authority: 'Country', authorityRating: 'same as casinoRepotation' }
     // casinoRelated: [], // same management { casinoName, casinoId, casinoUrlDetails }
     // // askgamblers
+    casinoBonusesUrl: String,
     // casinoBonuses: [], // new collection
     // casinoProviders: [], // new collection
     // casinoRestrictedCountries: [],

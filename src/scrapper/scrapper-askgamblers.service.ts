@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { join, posix } from 'path';
 import * as fetch from 'node-fetch';
 import * as puppeteer from 'puppeteer';
+import * as _ from 'underscore';
 
 const chromeOptions = {
     headless: false,
@@ -55,6 +56,7 @@ export class ScrapperAskGamblersService {
     }
 
     scrapePages(list) {
+        list = [list[0]];
         return new Promise((resolve, reject) => {
 
             mapLimit(list, 8, async (item) => {
@@ -79,13 +81,27 @@ export class ScrapperAskGamblersService {
             const page = await browser.newPage();
 
             await page.goto('https://www.askgamblers.com' + item.casinoUrlDetails, {
-                waitUntil: 'load', timeout: 0 });
+                waitUntil: 'load', timeout: 0
+            });
             let html = await page.content();
             const $ = cheerio.load(html);
+
+            // casinoLogo
             item['casinoLogo'] = $('.ch-main').find('.ch-main__logo').attr('src');
+
+            // casinoReputation
             item['casinoReputation'] = $('.ch-main').find('.ch-rating').text().replace(/\n/g, '').trim().split(' ')[0];
+
+            // casinoBonusesUrl
             item['casinoBonusesUrl'] = $('#casinoBonuses').find('.top10__all').attr('href');
+
+            // casinoPlayUrl
             item['casinoPlayUrl'] = $('.ch-main').find('.ch-cta-inline-buttons__play-now-container a').first().attr('href');
+
+            // casinoWebsiteUrl
+            item['casinoWebsiteUrl'] = $('.top10__term:contains("Website")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoSpecs
             let positives = [];
             let negatives = [];
             $('.review-main__content').find('.review-pros li').each(function () {
@@ -95,7 +111,120 @@ export class ScrapperAskGamblersService {
                 negatives.push($(this).text());
             });
             item['casinoSpecs'] = { negatives, positives };
-            console.log(positives, negatives);
+
+            // casinoLanguages
+            item['casinoLanguages'] = [];
+            $('.top10__term:contains("Languages")').next().find('a').each(function () {
+                item['casinoLanguages'].push($(this).text().replace(/\n/g, '').trim());
+            });
+
+            // casinoLiveChat
+            item['casinoLiveChat'] = $('.top10__term:contains("Live Chat")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoContact
+            item['casinoContact'] = { email: '', phone: '' };
+            $('.top10__term:contains("Contact")').next().find('p').each(function () {
+                let contact = $(this).find('a').text().replace(/\n/g, '').trim();
+                if (contact) {
+                    if (contact.indexOf('@') != -1) {
+                        item['casinoContact'].email = contact;
+                    } else {
+                        item['casinoContact'].phone = contact;
+                    }
+                }
+            });
+
+            // casinoOwner
+            item['casinoOwner'] = $('.top10__term:contains("Owner")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoEstablished
+            item['casinoEstablished'] = $('.top10__term:contains("Established")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoWithdrawalLimit
+            item['casinoWithdrawalLimit'] = $('.top10__term:contains("Withdrawal Limit")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoLicensingAuthorities
+            item['casinoLicensingAuthorities'] = [];
+            $('.top10__term:contains("Licences")').next().find('a').each(function () {
+                item['casinoLicensingAuthorities'].push($(this).text().replace(/\n/g, '').trim());
+            });
+
+            // casinoRestrictedCountries
+            item['casinoRestrictedCountries'] = [];
+            let allCountriesAndStates = [];
+            let allStates = [];
+            $('.top10__term:contains("Restricted Countries")').next().find('.column-list li').each(function () {
+                let country = {};
+                let states = [];
+
+                let hasStates = $(this).find('.toggle-states');
+                if (hasStates.length > 0) {
+                    country['name'] = $(this).text().replace(/\n/g, '').split('[')[0].trim();
+                    $(this).find('.state-list li').each(function () {
+                        states.push($(this).text().replace(/\n/g, '').trim());
+                    });
+                    country['states'] = states;
+                    allStates = allStates.concat(states);
+                } else {
+                    country['name'] = $(this).text().replace(/\n/g, '').trim();
+                }
+                allCountriesAndStates.push(country);
+            });
+            for (let i = 0, l = allCountriesAndStates.length; i < l; i++) {
+                if (!_.contains(allStates, allCountriesAndStates[i].name)) {
+                    item['casinoRestrictedCountries'].push(allCountriesAndStates[i]);
+                }
+            }
+
+            // casinoType
+            item['casinoType'] = [];
+            $('.top10__term:contains("Casino Type")').next().find('a').each(function () {
+                item['casinoType'].push($(this).text().replace(/\n/g, '').trim());
+            });
+
+            // casinoAffiliateProgram 
+            let casinoAffiliate = $('.top10__term:contains("Affiliate Program")').next().find('a');
+            item['casinoAffiliateProgram'] = {
+                name: $(casinoAffiliate).text().replace(/\n/g, '').trim(),
+                url: $(casinoAffiliate).attr('href')
+            };
+
+            // casinoRtp
+            item['casinoRtp'] = $('.top10__term:contains("RTP")').next().find('a').text().replace(/\n/g, '').trim();
+
+            // casinoCurrencies
+            item['casinoCurrencies'] = [];
+            $('.top10__term:contains("Currencies")').next().find('a').each(function () {
+                item['casinoCurrencies'].push($(this).text().replace(/\n/g, '').trim());
+            });
+
+            // casinoSoftwareProviders
+            item['casinoSoftwareProviders'] = [];
+            $('.top10__term:contains("Software")').next().find('a').each(function () {
+                item['casinoSoftwareProviders'].push({
+                    name: $(this).text().replace(/\n/g, '').trim(),
+                    url: $(this).attr('href')
+                });
+            })
+            // casinoDepositMethods
+            item['casinoDepositMethods'] = [];
+            $('.top10__term:contains("Deposit Methods")').next().find('a').each(function () {
+                item['casinoDepositMethods'].push({
+                    name: $(this).text().replace(/\n/g, '').trim(),
+                    url: $(this).attr('href')
+                });
+            });
+
+            // casinoWithdrawalMethods
+            item['casinoWithdrawalMethods'] = [];
+            $('.top10__term:contains("Withdrawal Methods")').next().find('a').each(function () {
+                item['casinoWithdrawalMethods'].push({
+                    name: $(this).text().replace(/\n/g, '').trim(),
+                    url: $(this).attr('href')
+                });
+            });
+
+            // close headless browser and done process one
             await browser.close();
             resolve(item);
         });

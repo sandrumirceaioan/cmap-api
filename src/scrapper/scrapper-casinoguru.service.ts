@@ -123,6 +123,7 @@ export class ScrapperCasinoGuruService {
             }, async (err, resp) => {
                 if (err || resp.statusCode !== 200) return resolve();
                 const response = await fetch(document);
+                console.log(response);
                 let writer = fs.createWriteStream(fullPath);
                 response.body.pipe(writer);
                 writer.on('finish', async (result) => {

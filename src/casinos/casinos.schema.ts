@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 
 export const CasinosSchema = new mongoose.Schema({
-    // casino.guru
     casinoName: String,
     casinoUrlDetails: String,
     casinoPlayUrl: String, // MANUAL AFFILIATE URLS
@@ -20,14 +19,14 @@ export const CasinosSchema = new mongoose.Schema({
     casinoBonusesUrl: String, // TO BE SCRAPED LATER
     // casinoBonuses: [],
     casinoRestrictedCountries: [],
-    casinoType: String,
+    casinoType: [],
     casinoAffiliateProgram: { name: String, url: String }, // TO BE SCRAPPED LATER
     casinoRtp: String,
     casinoCurrencies: [],
     casinoSoftwareProviders: [], // TO BE SCRAPPED LATER
     casinoDepositMethods: [],
     casinoWithdrawalMethods: [],
-    // casinoWithdrawalTimes: [],
+    casinoWithdrawalTimes: [],
     // casinoReviews: [], // new collection
     // casinoComplaints: [], // new collection
     // casinoNews: [], // new collection

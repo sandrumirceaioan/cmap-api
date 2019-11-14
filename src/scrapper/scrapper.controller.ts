@@ -18,7 +18,7 @@ export class ScrapperController {
 
     @Post('/askgamblers')
     async scrapeGamblers(@Body() data){
-        return this.scrapperAskGamblersService.scrapeUrl(data);
+        return this.scrapperAskGamblersService.scrapeUrl();
     }
 
 }

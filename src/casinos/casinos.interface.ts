@@ -3,32 +3,34 @@ import * as mongoose from 'mongoose';
 export interface Casino extends mongoose.Document {
     casinoName: String;
     casinoUrlDetails: String;
-    casinoUrlVisit: String; 
-    casinoUrlBonus: String;
+    casinoPlayUrl: String, // MANUAL AFFILIATE URLS
+    casinoWebsiteUrl: String;
     casinoLogo: String;
     casinoSpecs: Object;
     casinoScore: String;
-    casinoVotes: Object;
     casinoReputation: String;
-    casinoVpnUsage: Boolean;
-    casinoLanguages: Object;
-    casinoChatLanguages: Object;
-    casinoEmailLanguages: Object;
-    casinoOwner: Object;
-    casinoEstablished: Object;
-    casinoWithdrawallimit: Object;
-    casinoLicensingAuthorities: Object;
-    casinoRelated: Object;
-    casinoBonuses: Object;
-    casinoProviders: Object;
-    casinoRestrictedCountries: Object;
-    casinoType: String;
-    casinoRtp: String;
+    casinoLanguages: Object
+    casinoLiveChat: String;
     casinoContact: Object;
-    casinoReviews: [];
-    casinoComplaints: [];
-    casinoNews: [];
-    casinoSlots: [];
-    casinoDescription: String,
-    casinoCreated: Date;
+    casinoOwner: String;
+    casinoEstablished: String;
+    casinoWithdrawalLimit: String;
+    casinoLicensingAuthorities: Object;
+    casinoBonusesUrl: String; // TO BE SCRAPED LATER
+    // casinoBonuses: [],
+    casinoRestrictedCountries: Object;
+    casinoType: Object;
+    casinoAffiliateProgram: Object; // TO BE SCRAPPED LATER
+    casinoRtp: String;
+    casinoCurrencies: Object;
+    casinoSoftwareProviders: Object; // TO BE SCRAPPED LATER
+    casinoDepositMethods: Object;
+    casinoWithdrawalMethods: Object;
+    casinoWithdrawalTimes: Object;
+    // casinoReviews: [], // new collection
+    // casinoComplaints: [], // new collection
+    // casinoNews: [], // new collection
+    // casinoSlots: [], // new collection
+    // casinoDescription: String,
+    casinoCreated: Date
 }

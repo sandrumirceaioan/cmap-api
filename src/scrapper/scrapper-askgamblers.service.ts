@@ -23,11 +23,16 @@ export class ScrapperAskGamblersService {
     ) {
     }
 
-    async scrapeUrl(data): Promise<any> {
+    async onModuleInit() {
+        // let result = await this.scrapeUrl();
+        // console.log(result.length);
+    }
+
+    async scrapeUrl(): Promise<any> {
         let urls = [];
         urls[0] = 'https://www.askgamblers.com/online-casino-reviews'
         let all = [];
-        for (let i = 1; i < 1; i++) {
+        for (let i = 1; i < 62; i++) {
             urls.push(urls[0] + '/' + (i + 1));
         }
 
@@ -48,7 +53,6 @@ export class ScrapperAskGamblersService {
                     return console.log('SCRAPE ERROR', err);
                 } else {
                     let data = await this.scrapePages(all);
-                    console.log('final result: ', data);
                     resolve(data);
                 }
             });
@@ -56,7 +60,6 @@ export class ScrapperAskGamblersService {
     }
 
     scrapePages(list) {
-        list = [list[0]];
         return new Promise((resolve, reject) => {
 
             mapLimit(list, 8, async (item) => {
@@ -224,9 +227,29 @@ export class ScrapperAskGamblersService {
                 });
             });
 
+            // casinoWithdrawalTimes
+            item['casinoWithdrawalTimes'] = [];
+            $('.top10__term:contains("Withdrawal Times")').next().find('p').each(function () {
+                item['casinoWithdrawalTimes'].push({
+                    type: $(this).text().replace(/\n/g, '').trim().split(':')[0],
+                    duration: $(this).find('a').text().replace(/\n/g, '').trim()
+                });
+            });
+
+            // save casino and logo
+            let parsedSrc = new URL(item['casinoLogo'].toString());
+            let logoUrl = parsedSrc.origin + parsedSrc.pathname;
+
+            item['casinoLogo'] = parsedSrc.pathname.split('/').pop();
+            let casino = await this.casinosService.add(item);
+
+            if (casino) {
+                await this.uploadFile(logoUrl, item['casinoLogo'])
+            }
+
             // close headless browser and done process one
             await browser.close();
-            resolve(item);
+            resolve(casino);
         });
     }
 
@@ -256,77 +279,36 @@ export class ScrapperAskGamblersService {
         });
     }
 
-    // saveCasino(casinos) {
-    //     return new Promise((resolve, reject) => {
-    //         mapLimit(casinos, 5, async (cs) => {
+    uploadFile(document, fileName) {
+        console.log(document, fileName);
+        return new Promise(async (resolve, reject) => {
+            let filePath = '/assets/casinos/';
 
-    //             let parsedSrc = new URL(cs.image.toString());
-    //             let fn = parsedSrc.origin + parsedSrc.pathname;
-    //             let originalFileName = parsedSrc.pathname.split('/')[3] + '.jpg';
+            if (!fs.existsSync(join(process.cwd(), filePath))) fs.mkdirSync(join(process.cwd(), filePath), { recursive: true });
 
-    //             let casino = await this.casinosService.add({
-    //                 casinoName: cs.title,
-    //                 casinoUrlDetails: cs.href,
-    //                 casinoLogo: originalFileName
-    //             });
+            let fullPath = join(process.cwd(), filePath, fileName);
 
-    //             await this.uploadFile(fn, originalFileName);
+            const browser = await puppeteer.launch(chromeOptions);
+            const page = await browser.newPage();
+            page.setViewport({ width: 1280, height: 926 });
 
-    //             return Promise.resolve(casino);
-    //         }, (err, result) => {
-    //             if (err) {
-    //                 return console.log('SCRAPE ERROR', err);
-    //             } else {
-    //                 resolve(result);
-    //             }
-    //         });
-    //     });
-    // }
+            page.on('response', async (response) => {
+                const matches = /.*\.(jpg|png|svg|gif)$/.exec(response.url());
+                if (matches && (matches.length === 2)) {
+                    const buffer = await response.buffer();
+                    fs.writeFileSync(fullPath, buffer);
+                }
+            });
 
-    // uploadFile(document, fileName) {
-    //     return new Promise(async (resolve, reject) => {
-    //         let filePath = '/assets/casinos/';
+            await page.goto(document);
+            await page.waitFor(200);
 
-    //         if (!fs.existsSync(join(process.cwd(), filePath))) fs.mkdirSync(join(process.cwd(), filePath), { recursive: true });
+            await browser.close();
 
-    //         let fullPath = join(process.cwd(), filePath, fileName);
+            resolve();
+        });
+    }
 
-    //         request({
-    //             method: 'HEAD',
-    //             url: document,
-    //             followRedirect: false
-    //         }, async (err, resp) => {
-    //             if (err || resp.statusCode !== 200) return resolve();
-    //             const response = await fetch(document);
-    //             let writer = fs.createWriteStream(fullPath);
-    //             response.body.pipe(writer);
-    //             writer.on('finish', async (result) => {
-    //                 writer.end();
-    //                 resolve();
-    //             });
-    //             writer.on('error', (error) => {
-    //                 resolve();
-    //                 writer.end();
-    //             });
-    //         });
-
-    //     });
-    // }
-
-    // getCasinoRealUrl(fakeUrl) {
-    //     let link = 'https://www.askgamblers.com' + fakeUrl;
-    //     let realUrl;
-    //     return new Promise(async (resolve, reject) => {
-    //         const browser = await puppeteer.launch(chromeOptions);
-    //         const page = await browser.newPage();
-    //         const response = await page.goto(link);
-    //         console.log(response.status());
-    //         const redirects = await response.request().redirectChain();
-    //         realUrl = redirects[0].url();
-    //         await browser.close();
-    //         resolve(realUrl);
-    //     });
-    // }
 
 }
 

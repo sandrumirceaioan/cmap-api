@@ -37,5 +37,6 @@ export const CasinosSchema = new mongoose.Schema({
         default: function () {
             return new Date().getTime()
         }
-    }
+    },
+    casinoClosed: Boolean
 });

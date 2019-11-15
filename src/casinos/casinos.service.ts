@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Casino } from './casinos.interface';
+import * as _ from 'underscore';
 
 const ObjectId = Types.ObjectId;
 
@@ -20,6 +21,18 @@ export class CasinosService {
 
     async getAll(): Promise<Casino[]> {
         return await this.casinoModel.find();
+    }
+
+    async getAllActive(): Promise<Casino[]> {
+        const casinos = await this.casinoModel.find({casinoWebsiteUrl: { $ne: "" }});
+        let list = [];
+        let uniqueCasinos = casinos.filter((casino) => {
+            if (!_.contains(list, casino.casinoName)) {
+                list.push(casino.casinoName);
+                return casino;
+            }
+        });
+        return uniqueCasinos;
     }
 
     async getOneById(id): Promise<Casino> {

@@ -21,4 +21,9 @@ export class ScrapperController {
         return this.scrapperAskGamblersService.scrapeUrl();
     }
 
+    @Post('/askgamblers/bonuses')
+    async getBonuses(@Body() data){
+        return this.scrapperAskGamblersService.getBonuses();
+    }
+
 }

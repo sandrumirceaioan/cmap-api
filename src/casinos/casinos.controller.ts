@@ -21,6 +21,11 @@ export class CasinosController {
         return this.casinosService.getAll();
     }
 
+    @Get('/all/active')
+    async allActive(@Query() params) {
+        return this.casinosService.getAllActive();
+    }
+
     @Get('/oneById/:id')
     async getOneById(@Param('id') id){
         return this.casinosService.getOneById(id);

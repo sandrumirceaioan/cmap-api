@@ -35,6 +35,10 @@ export class CasinosService {
         return uniqueCasinos;
     }
 
+    async getGroupedCasinos(): Promise<any> {
+        return await this.casinoModel.aggregate([{$group:{ _id:"$casinoName", cs: { $addToSet :  "$_id" }}}]);
+    }
+
     async getOneById(id): Promise<Casino> {
         let casino = await this.casinoModel.findOne({_id: new ObjectId(id)});
         if (!casino) throw new HttpException('Casino not found!', HttpStatus.BAD_REQUEST);

@@ -31,7 +31,7 @@ export interface Casino extends mongoose.Document {
     // casinoComplaints: [], // new collection
     // casinoNews: [], // new collection
     // casinoSlots: [], // new collection
-    // casinoDescription: String,
+    casinoDescription: String,
     casinoCreated: Date;
     casinoClosed: Boolean;
     casinoProcessed?: Boolean;

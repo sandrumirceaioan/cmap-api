@@ -4,6 +4,8 @@ import { Model, Types } from 'mongoose';
 import { Casino } from './casinos.interface';
 import { eachLimit, map, mapLimit } from 'async';
 import * as _ from 'underscore';
+import * as Jimp from 'jimp';
+import * as rgb2hex from 'rgb2hex';
 
 const ObjectId = Types.ObjectId;
 
@@ -15,7 +17,7 @@ export class CasinosService {
     ) { }
 
     onModuleInit() {
-       
+
     }
 
     async add(casino): Promise<Casino> {
@@ -29,7 +31,7 @@ export class CasinosService {
     }
 
     async getBest(): Promise<Casino[]> {
-        return await this.casinoModel.find().limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoReputation');
+        return await this.casinoModel.find().skip(6).limit(8).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
     }
 
     async getAllActive(): Promise<Casino[]> {
@@ -208,3 +210,38 @@ export class CasinosService {
 //         return;
 //     })
 // }
+
+
+
+    // // timeout(ms) {
+    // //     return new Promise(resolve => setTimeout(resolve, ms));
+    // // }
+
+    // async logoBgColor(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let casinos = await this.getAll();
+    //         mapLimit(casinos, 1, async (item, callback) => {
+
+    //             // await this.timeout(50);
+    //             console.log(item.casinoLogo);
+    //             let image = await Jimp.read('http://localhost:3000/' + item.casinoLogo);
+    //             let ahex = image.getPixelColor(0, 0);
+    //             let color = Jimp.intToRGBA(ahex);
+    //             let rgba = `rgba(${color.r}, ${color.g}, ${color.b})`;
+    //             let hex = rgb2hex(rgba);
+    //             console.log(hex.hex);
+
+    //             await this.updateOneById(item._id, {casinoLogoBg: hex.hex});
+
+    //             return Promise.resolve(item);
+    //         }, (error, result) => {
+    //             if (error) {
+    //                 console.log('ERROR: ', error);
+    //                 return resolve();
+    //             }
+    //             console.log('DONE: ', result.length);
+    //             return resolve(result);
+    //         });
+
+    //     });
+    // }

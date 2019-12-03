@@ -13,12 +13,14 @@ const ObjectId = Types.ObjectId;
 export class SlotsService {
 
     async onModuleInit() {
-        this.removeDuplicates();
+        
     }
 
     constructor(
         @InjectModel('Slot') private readonly slotsModel: Model<Slot>
     ) { }
+
+
 
     async checkImages(): Promise<any> {
         return new Promise(async (resolve, reject) => {
@@ -66,28 +68,6 @@ export class SlotsService {
         });
     }
 
-    async removeDuplicates(): Promise<any> {
-        return new Promise(async (resolve, reject) => {
-            let uniqueSlots = await this.slotsModel.aggregate([{ $group: { _id: "$slotUrlDetails", cs: { $addToSet: "$_id" } } }]);
-            let slotsToRemove = [];
-            slotsToRemove = uniqueSlots.filter(item => item.cs.length > 1);
-            console.log(uniqueSlots.length);
-            console.log(slotsToRemove.length);
-
-            // mapLimit(slotsToRemove, 1, async (item) => {
-            //     console.log(item.cs);
-            //     //let deleted = await this.deleteOneById(item.cs[0]);
-            //     return Promise.resolve(item);
-            // }, async (err, result) => {
-            //     if (err) {
-            //         console.log('ERROR', err);
-            //     } else {
-            //         console.log('DONE:', result.length);
-            //         return resolve(result);
-            //     }
-            // });
-        });
-    }
 
     async add(slot): Promise<Slot> {
         let newSlot = new this.slotsModel(slot);
@@ -96,7 +76,7 @@ export class SlotsService {
     }
 
     async getAll(): Promise<Slot[]> {
-        return await this.slotsModel.find();
+        return await this.slotsModel.find().limit(100);
     }
 
     async getOneById(id): Promise<Slot> {
@@ -145,5 +125,47 @@ export class SlotsService {
             //         return resolve(result);
             //     }
             // });
+    //     });
+    // }
+
+
+        // async updateSlotsAndImages(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let slots = await this.getAll();
+
+    //         mapLimit(slots, 1, async (slot) => {
+    //             let logoPath = join(__dirname + './../../assets/slots/screenshot/' + slot.slotScreenshot);
+    //             let logoExt = slot.slotScreenshot.split('.').pop();
+    //             let logoName = slot.slotScreenshot.split('.').shift();
+    //             let newLogoPath = join(__dirname + './../../assets/slots/screenshot/' + 'try-' + logoName + '-' + 'game' + '.' + logoExt);
+    //             let slotLogoNew = 'try-' + logoName + '-' + 'game' + '.' + logoExt;
+
+    //             // console.log(logoPath);
+    //             // console.log(logoExt);
+    //             // console.log(logoName);
+    //             // console.log(newLogoPath);
+
+    //             try {
+    //                 if (fs.existsSync(logoPath)) {
+    //                     fs.renameSync(logoPath, newLogoPath);
+    //                     let updated = await this.updateOneById(slot._id, {slotScreenshot: slotLogoNew})
+    //                     // console.log('EXISTS');
+    //                 } else {
+    //                     console.log('NOT EXISTS');
+    //                 }
+    //             } catch (err) {
+    //                 console.error(err);
+    //             }
+    //             // console.log('----------------------------');
+
+    //             return Promise.resolve(slot);
+    //         }, async (err, result) => {
+    //             if (err) {
+    //                 console.log('ERROR', err);
+    //             } else {
+    //                 return resolve(result);
+    //             }
+    //         });
+
     //     });
     // }

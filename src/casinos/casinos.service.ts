@@ -15,6 +15,7 @@ export class CasinosService {
     ) { }
 
     onModuleInit() {
+       
     }
 
     async add(casino): Promise<Casino> {
@@ -25,6 +26,10 @@ export class CasinosService {
 
     async getAll(): Promise<Casino[]> {
         return await this.casinoModel.find();
+    }
+
+    async getBest(): Promise<Casino[]> {
+        return await this.casinoModel.find().limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoReputation');
     }
 
     async getAllActive(): Promise<Casino[]> {
@@ -148,13 +153,13 @@ export class CasinosService {
 //     return new Promise(async (resolve, reject) => {
 //         let casinos = await this.casinoModel.find();
 //         mapLimit(casinos, 1, async (casino, callback) => {
-            
+
 //             let reputation = casino.casinoReputation;
 //             this.usedDescriptions[reputation] = !this.usedDescriptions[reputation];
 //             let repIndex = this.usedDescriptions[reputation] ? ' 1' : ' 2';
 //             let key = reputation + repIndex;
 //             let desc = descriptions[key];
-            
+
 //             for (let i = 0, l = this.usedPlaceholders.length; i < l; i++) {
 //                 let replaceValue = '';
 //                 if (this.usedPlaceholders[i] === 'casinoSoftwareProviders') {
@@ -180,4 +185,26 @@ export class CasinosService {
 //         });
 
 //     });
+// }
+
+// update scraped casinos score from string to float
+// async updateScoreToFloat(): Promise<any> {
+//     return new Promise(async (resolve, reject) => {
+//         let casinos = await this.getAllActive();
+//         console.log(casinos.length);
+
+//         mapLimit(casinos, 1, async (casino) => {
+//             let score = parseFloat(casino.casinoScore);
+//             let updated = await this.updateOneById(casino._id, {
+//                 casinoScore: score
+//             });
+//             if (updated) return Promise.resolve(updated);
+//         }, (error, result) => {
+//             if (error) console.log('ERROR');
+//             console.log('DONE');
+//             return resolve(result);
+//         });
+
+//         return;
+//     })
 // }

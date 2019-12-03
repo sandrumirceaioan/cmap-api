@@ -7,7 +7,7 @@ export const CasinosSchema = new mongoose.Schema({
     casinoWebsiteUrl: String,
     casinoLogo: String,
     casinoSpecs: { positives: [], negatives: [] },
-    casinoScore: String,
+    casinoScore: Number,
     casinoReputation: String,
     casinoLanguages: [],
     casinoLiveChat: String,

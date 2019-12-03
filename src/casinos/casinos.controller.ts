@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request } from '@nestjs/common';
 import { CasinosService } from './casinos.service';
 import { Casino } from './casinos.interface';
 
@@ -17,12 +17,17 @@ export class CasinosController {
     }
 
     @Get('/all')
-    async all(@Query() params) {
+    async all(@Request() req) {
         return this.casinosService.getAll();
     }
 
+    @Get('/best')
+    async best(@Request() req) {
+        return this.casinosService.getBest();
+    }
+
     @Get('/all/active')
-    async allActive(@Query() params) {
+    async allActive(@Request() req) {
         return this.casinosService.getAllActive();
     }
 

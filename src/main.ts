@@ -14,6 +14,11 @@ async function bootstrap() {
     "optionsSuccessStatus": 204
   });
   app.useStaticAssets(join(__dirname + './../assets/casinos'));
+  app.useStaticAssets(join(__dirname + './../assets/slots/logo'));
+  app.useStaticAssets(join(__dirname + './../assets/slots/screenshot'));
+  // app.useStaticAssets(join(__dirname + './../assets/slots/logo'), { prefix: "/slots/logo" });
+  // app.useStaticAssets(join(__dirname + './../assets/slots/screenshot'), { prefix: "/slots/screenshot" });
+  
   await app.listen(3000);
 }
 bootstrap();

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,15 +9,17 @@ import { CasinosModule } from './casinos/casinos.module';
 import { BonusesModule } from './bonuses/bonuses.module';
 import { SlotsModule } from './slots/slots.module';
 import { AffiliatesModule } from './affiliates/affiliates.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/cbo', { useNewUrlParser: true }),
+    MongooseModule.forRoot(process.env.CONNECTION_STRING, { useNewUrlParser: true }),
     CasinosModule,
     BonusesModule,
     SlotsModule,
     AffiliatesModule,
-    ScrapperModule
+    ScrapperModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

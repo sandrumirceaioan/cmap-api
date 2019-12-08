@@ -2,10 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Casino } from './casinos.interface';
-import { eachLimit, map, mapLimit } from 'async';
+import { mapLimit, parallel } from 'async';
+import * as moment from 'moment';
 import * as _ from 'underscore';
 import * as Jimp from 'jimp';
 import * as rgb2hex from 'rgb2hex';
+import * as fs from 'fs';
+import { join } from 'path';
 
 const ObjectId = Types.ObjectId;
 
@@ -17,7 +20,11 @@ export class CasinosService {
     ) { }
 
     onModuleInit() {
+        //this.updateCasinosAndLogos();
+    }
 
+    timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async add(casino): Promise<Casino> {
@@ -74,6 +81,38 @@ export class CasinosService {
         if (!deletedCasino) throw new HttpException('CAsino not deleted!', HttpStatus.BAD_REQUEST);
         return deletedCasino;
     }
+
+    /* admin */
+
+    async countDashboard(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let response = {
+                all: null,
+                published: null
+            };
+            parallel([
+                async () => {
+                    response.all = await this.casinoModel.count();
+                    return Promise.resolve();
+                },
+                async () => {
+                    response.published = await this.casinoModel.count({
+                        casinoPublished: true,
+                    });
+                    return Promise.resolve();
+                }
+            ],
+                // optional callback
+                (err, result) => {
+                    if (err) {
+                        console.log('Parallel count: ', err);
+                        reject(err);
+                    }
+                    resolve(response);
+                });
+        });
+    }
+
 }
 
 // used to update reputaion based by score
@@ -241,6 +280,54 @@ export class CasinosService {
     //             }
     //             console.log('DONE: ', result.length);
     //             return resolve(result);
+    //         });
+
+    //     });
+    // }
+
+    // PERFECT WORKING
+    // async updateCasinosAndLogos(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let casinos = await this.getAll();
+    //         let index = 0;
+
+    //         mapLimit(casinos, 1, async (casino) => {
+    //             index++;
+    //             await this.timeout(50);
+    //             let logoPath = join(__dirname + './../../assets/casinos/' + casino.casinoLogo);
+
+    //             let logoExt = casino.casinoLogo.split('.').pop();
+    //             let logoName = casino.casinoLogo.split('.').shift();
+
+    //             let newLogoPath = join(__dirname + './../../assets/casinos/' + 'review-' + logoName + '-' + 'online' + '.' + logoExt);
+    //             let slotLogoNew = 'review-' + logoName + '-' + 'online' + '.' + logoExt;
+
+    //             // console.log(logoPath);
+    //             // console.log(logoExt);
+    //             // console.log(logoName);
+    //             // console.log(newLogoPath);
+
+    //             if (fs.existsSync(logoPath)) {
+    //                 let logo = await Jimp.read(logoPath);
+    //                 if (!logo) return Promise.reject();
+    //                 logo
+    //                     .crop(5, 5, 140, 140)
+    //                     .quality(100)
+    //                     .write(newLogoPath);
+    //                 await this.updateOneById(casino._id, {casinoLogo: slotLogoNew});
+    //                 console.log(index);
+    //             } else {
+    //                 console.log('NOT EXISTS');
+    //             }
+
+    //             return Promise.resolve(casino.casinoLogo);
+    //         }, async (err, result) => {
+    //             if (err) {
+    //                 console.log('ERROR', err);
+    //             } else {
+    //                 console.log('RESULT: ', result);
+    //                 return resolve(result);
+    //             }
     //         });
 
     //     });

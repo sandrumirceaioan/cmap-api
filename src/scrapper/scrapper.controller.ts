@@ -8,9 +8,9 @@ export class ScrapperController {
             private slotsAskgamblersService: SlotsAskgamblersService
         ){}
 
-        @Post('/askgamblers/missing')
-        async missing(@Body() data){
-            return this.slotsAskgamblersService.downloadMissingImages();
-        }
+        // @Post('/askgamblers/missing')
+        // async missing(@Body() data){
+        //     return this.slotsAskgamblersService.downloadMissingImages();
+        // }
 
 }

@@ -26,9 +26,6 @@ export class SlotsAskgamblersService {
     }
 
     async onModuleInit() {
-        setTimeout(() => {
-            //this.downloadMissingImages();
-        }, 1000);
     }
 
     async scrapeSlots(): Promise<any> {
@@ -240,37 +237,33 @@ export class SlotsAskgamblersService {
     }
 
 
-    async downloadMissingImages(): Promise<any> {
-        return new Promise(async (resolve, reject) => {
-            let missing = await this.slotsService.checkImages();
+    // async downloadMissingImages(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let missing = await this.slotsService.checkImages();
 
-                console.log(missing.length);
+    //             console.log(missing.length);
 
-            mapLimit(missing, 3, async (image) => {
-                let parsedLogoUrl = new URL(image.toString());
-                let downloadLogoUrl = parsedLogoUrl.origin + parsedLogoUrl.pathname;
+    //         mapLimit(missing, 3, async (image) => {
+    //             let parsedLogoUrl = new URL(image.toString());
+    //             let downloadLogoUrl = parsedLogoUrl.origin + parsedLogoUrl.pathname;
 
-                let fileName = parsedLogoUrl.pathname.split('/').pop();
+    //             let fileName = parsedLogoUrl.pathname.split('/').pop();
 
-                let downloaded = await this.uploadFile(downloadLogoUrl, fileName, 'screenshot');
-                console.log(this.missingDownloaded++);
+    //             let downloaded = await this.uploadFile(downloadLogoUrl, fileName, 'screenshot');
+    //             console.log(this.missingDownloaded++);
                 
-                return Promise.resolve();
-            }, (error, result) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log(result.length);
-                    return resolve();
-                }
-            });
+    //             return Promise.resolve();
+    //         }, (error, result) => {
+    //             if (error) {
+    //                 console.log(error);
+    //             } else {
+    //                 console.log(result.length);
+    //                 return resolve();
+    //             }
+    //         });
 
-            // clone original Screenshot url - needed for download
-            // let parsedScreenshotUrl = new URL(initialScreenshotUrl.toString());
-            // let downloadScreenshotUrl = parsedScreenshotUrl.origin + parsedScreenshotUrl.pathname;
-
-        });
-    }
+    //     });
+    // }
 
     uploadFile(document, fileName, folder) {
         return new Promise(async (resolve, reject) => {

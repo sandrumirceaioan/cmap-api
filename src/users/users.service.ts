@@ -5,6 +5,8 @@ import { User } from './users.interface';
 import * as CryptoJS from 'crypto-js';
 import { JwtService } from '@nestjs/jwt';
 
+const ObjectId = Types.ObjectId;
+
 @Injectable()
 export class UsersService {
 
@@ -34,6 +36,12 @@ export class UsersService {
         let newUser = new this.userModel(user);
         let response = newUser.save();
         return response;
+    }
+
+    async getOneById(id): Promise<User> {
+        let slot = await this.userModel.findOne({ _id: new ObjectId(id) });
+        if (!slot) throw new HttpException('User not found!', HttpStatus.BAD_REQUEST);
+        return slot;
     }
 
 

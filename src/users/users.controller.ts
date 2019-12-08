@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, UseGuards, Request, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -22,6 +23,12 @@ export class UsersController {
         user: added,
         message: 'User registered!'
       }
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/verify')
+    async verify(@Request() req) {
+      return await this.usersService.getOneById(req.user.id);
     }
 
 }

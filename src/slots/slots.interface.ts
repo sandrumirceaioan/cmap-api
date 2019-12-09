@@ -28,4 +28,6 @@ export interface Slot extends mongoose.Document {
     slotMultiplier: String;
     slotFreeSpins: String;
     slotCreated: Date;
+    slotStatus: Boolean;
+    slotPublished: Boolean;
 }

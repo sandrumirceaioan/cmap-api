@@ -1,6 +1,7 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards } from '@nestjs/common';
 import { AffiliatesService } from './affiliates.service';
 import { Affiliate } from './affiliates.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('affiliates')
 export class AffiliatesController {
@@ -23,7 +24,7 @@ export class AffiliatesController {
 
 
     @Get('/oneById/:id')
-    async getOneById(@Param('id') id){
+    async getOneById(@Param('id') id) {
         return this.affiliatesService.getOneById(id);
     }
 
@@ -40,7 +41,14 @@ export class AffiliatesController {
     async remove(@Param('id') id: string) {
         let deleted = await this.affiliatesService.deleteOneById(id);
         console.log('deleted: ', deleted);
-        if (deleted) return { message: 'Affiliate '+ deleted.affiliateName +' deleted!' };
+        if (deleted) return { message: 'Affiliate ' + deleted.affiliateName + ' deleted!' };
+    }
+
+    /* admin routes */
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/count')
+    async countDashboard(@Request() req) {
+        return await this.affiliatesService.countDashboard();
     }
 
 }

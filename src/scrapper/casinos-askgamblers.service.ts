@@ -10,6 +10,8 @@ import * as puppeteer from 'puppeteer';
 import * as _ from 'underscore';
 import * as htmlToText from 'html-to-text';
 import { BonusesService } from '../bonuses/bonuses.service';
+import { ProvidersService } from '../providers/providers.service';
+import { PaymentMethodsService } from '../payments/paymet-methods.service';
 
 const chromeOptions = {
     headless: false,
@@ -22,13 +24,15 @@ export class CasinosAskgamblersService {
     casinoBonusesCount = 0;
     constructor(
         private casinosService: CasinosService,
-        private bonusesService: BonusesService
+        private bonusesService: BonusesService,
+        private providersService: ProvidersService,
+        private paymentMethodsService: PaymentMethodsService
     ) {
     }
 
-    async onModuleInit() {
-
-    }
+    // async onModuleInit() {
+    //     this.saveProvidersFromCasinos();
+    // }
 
 
     // START - MAIN SCRAPE ASKGAMBLERS
@@ -314,6 +318,44 @@ export class CasinosAskgamblersService {
         });
     }
 
+    // extract and save providers
+    // async saveProvidersFromCasinos(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let casinos = await this.casinosService.getAll();
+    //         let providers = [];
+    //         let index = 1;
+    //         console.log(casinos.length);
+
+    //         casinos.forEach((item) => {
+    //             providers = providers.concat(item.casinoSoftwareProviders);
+    //         });
+
+    //         providers = this.removeDuplicates(providers, 'name');
+
+    //         console.log(providers.length);
+
+    //         mapLimit(providers, 1, async (provider) => {
+    //             console.log(index++);
+    //             let addedProvider = await this.providersService.add({
+    //                 providerName: provider.name,
+    //                 providerWebsite: provider.url
+    //             });
+
+    //             if (addedProvider) return Promise.resolve(addedProvider);
+
+    //         }, (error, result) => {
+    //             if (error) return reject(error);
+    //             console.log('DONE: ', result.length);
+    //             return resolve();
+    //         });
+    //     });
+    // }
+
+    // removeDuplicates(myArr, prop) {
+    //     return myArr.filter((obj, pos, arr) => {
+    //         return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    //     });
+    // }
 }
 
 

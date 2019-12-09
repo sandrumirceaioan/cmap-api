@@ -26,5 +26,7 @@ export const AffiliatesSchema = new mongoose.Schema({
         default: function () {
             return new Date().getTime()
         }
-    }
+    },
+    affiliateStatus: Boolean,
+    affiliatePublished: Boolean
 });

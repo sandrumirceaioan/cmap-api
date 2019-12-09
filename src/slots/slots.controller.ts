@@ -1,6 +1,7 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards } from '@nestjs/common';
 import { SlotsService } from './slots.service';
 import { Slot } from './slots.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('slots')
 export class SlotsController {
@@ -39,7 +40,14 @@ export class SlotsController {
     @Delete('/delete/:id')
     async remove(@Param('id') id: string) {
         let deleted = await this.slotsService.deleteOneById(id);
-        if (deleted) return { message: 'Slot '+ deleted.slotName +' deleted!' };
+        if (deleted) return { message: 'Slot ' + deleted.slotName + ' deleted!' };
+    }
+
+    /* admin routes */
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/count')
+    async countDashboard(@Request() req) {
+        return await this.slotsService.countDashboard();
     }
 
 }

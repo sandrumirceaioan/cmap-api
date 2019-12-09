@@ -21,5 +21,7 @@ export const BonusesSchema = new mongoose.Schema({
         default: function () {
             return new Date().getTime()
         }
-    }
+    },
+    bonusStatus: Boolean,
+    bonusPublished: Boolean
 });

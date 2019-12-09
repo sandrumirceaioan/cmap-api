@@ -1,8 +1,9 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, UseGuards, Request } from '@nestjs/common';
 import { BonusesService } from './bonuses.service';
 import { Bonus } from './bonuses.interface';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('casinos')
+@Controller('bonuses')
 export class BonusesController {
 
     constructor(private readonly bonusesService: BonusesService) { }
@@ -23,7 +24,7 @@ export class BonusesController {
 
 
     @Get('/oneById/:id')
-    async getOneById(@Param('id') id){
+    async getOneById(@Param('id') id) {
         return this.bonusesService.getOneById(id);
     }
 
@@ -40,7 +41,14 @@ export class BonusesController {
     async remove(@Param('id') id: string) {
         let deleted = await this.bonusesService.deleteOneById(id);
         console.log('deleted: ', deleted);
-        if (deleted) return { message: 'Bonus '+ deleted.bonusName +' deleted!' };
+        if (deleted) return { message: 'Bonus ' + deleted.bonusName + ' deleted!' };
+    }
+
+    /* admin routes */
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/count')
+    async countDashboard(@Request() req) {
+        return await this.bonusesService.countDashboard();
     }
 
 }

@@ -17,4 +17,6 @@ export interface Bonus extends mongoose.Document {
     bonusAllowedGames: Object;
     bonusInformation: String;
     bonusCreated: Date;
+    bonusStatus: Boolean;
+    bonusPublished: Boolean;
 }

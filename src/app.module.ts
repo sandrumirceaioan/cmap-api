@@ -10,6 +10,8 @@ import { BonusesModule } from './bonuses/bonuses.module';
 import { SlotsModule } from './slots/slots.module';
 import { AffiliatesModule } from './affiliates/affiliates.module';
 import { UsersModule } from './users/users.module';
+import { ProvidersModule } from './providers/providers.module';
+import { PaymentMethodsModule } from './payments/payment-methods.module';
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { UsersModule } from './users/users.module';
     SlotsModule,
     AffiliatesModule,
     ScrapperModule,
-    UsersModule
+    UsersModule,
+    ProvidersModule,
+    PaymentMethodsModule
   ],
   controllers: [AppController],
   providers: [AppService],

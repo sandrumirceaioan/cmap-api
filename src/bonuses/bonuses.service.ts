@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Bonus } from './bonuses.interface';
 import * as _ from 'underscore';
+import { mapLimit, parallel } from 'async';
 
 const ObjectId = Types.ObjectId;
 
@@ -51,4 +52,35 @@ export class BonusesService {
         if (!deletedBonus) throw new HttpException('Bonus not deleted!', HttpStatus.BAD_REQUEST);
         return deletedBonus;
     }
+
+        /* admin */
+
+        async countDashboard(): Promise<any> {
+            return new Promise((resolve, reject) => {
+                let response = {
+                    all: null,
+                    published: null
+                };
+                parallel([
+                    async () => {
+                        response.all = await this.bonusModel.count();
+                        return Promise.resolve();
+                    },
+                    async () => {
+                        response.published = await this.bonusModel.count({
+                            bonusPublished: true,
+                        });
+                        return Promise.resolve();
+                    }
+                ],
+                    // optional callback
+                    (err, result) => {
+                        if (err) {
+                            console.log('Parallel count: ', err);
+                            reject(err);
+                        }
+                        resolve(response);
+                    });
+            });
+        }
 }

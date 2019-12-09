@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Slot } from './slots.interface';
-import { mapLimit } from 'async';
+import { mapLimit, parallel } from 'async';
 import * as _ from 'underscore';
 import * as Jimp from 'jimp';
 import * as rgb2hex from 'rgb2hex';
@@ -106,6 +106,38 @@ export class SlotsService {
         if (!deletedSlot) throw new HttpException('Slot not deleted!', HttpStatus.BAD_REQUEST);
         return deletedSlot;
     }
+
+        /* admin */
+
+        async countDashboard(): Promise<any> {
+            return new Promise((resolve, reject) => {
+                let response = {
+                    all: null,
+                    published: null
+                };
+                parallel([
+                    async () => {
+                        response.all = await this.slotsModel.count();
+                        return Promise.resolve();
+                    },
+                    async () => {
+                        response.published = await this.slotsModel.count({
+                            slotPublished: true,
+                        });
+                        return Promise.resolve();
+                    }
+                ],
+                    // optional callback
+                    (err, result) => {
+                        if (err) {
+                            console.log('Parallel count: ', err);
+                            reject(err);
+                        }
+                        resolve(response);
+                    });
+            });
+        }
+
 }
 
     // async removeDuplicates(): Promise<any> {

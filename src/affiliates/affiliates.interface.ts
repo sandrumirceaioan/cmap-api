@@ -22,4 +22,6 @@ export interface Affiliate extends mongoose.Document {
     affiliateCurrencies: Object;
     affiliateWithdrawalLimit: String;
     affiliateCreated: Date;
+    affiliateStatus: Boolean;
+    affiliatePublished: Boolean;
 }

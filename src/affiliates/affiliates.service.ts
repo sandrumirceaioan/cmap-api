@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Affiliate } from './affiliates.interface';
 import * as _ from 'underscore';
+import { parallel } from 'async';
 
 const ObjectId = Types.ObjectId;
 
@@ -25,7 +26,7 @@ export class AffiliatesService {
 
 
     async getOneById(id): Promise<Affiliate> {
-        let affiliate = await this.affiliateModel.findOne({_id: new ObjectId(id)});
+        let affiliate = await this.affiliateModel.findOne({ _id: new ObjectId(id) });
         if (!affiliate) throw new HttpException('Affiliate not found!', HttpStatus.BAD_REQUEST);
         return affiliate;
     }
@@ -48,4 +49,36 @@ export class AffiliatesService {
         if (!deletedAffiliate) throw new HttpException('Affiliate not deleted!', HttpStatus.BAD_REQUEST);
         return deletedAffiliate;
     }
+
+    /* admin */
+
+    async countDashboard(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let response = {
+                all: null,
+                published: null
+            };
+            parallel([
+                async () => {
+                    response.all = await this.affiliateModel.count();
+                    return Promise.resolve();
+                },
+                async () => {
+                    response.published = await this.affiliateModel.count({
+                        affiliatePublished: true,
+                    });
+                    return Promise.resolve();
+                }
+            ],
+                // optional callback
+                (err, result) => {
+                    if (err) {
+                        console.log('Parallel count: ', err);
+                        reject(err);
+                    }
+                    resolve(response);
+                });
+        });
+    }
+
 }

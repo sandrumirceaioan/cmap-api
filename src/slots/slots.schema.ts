@@ -32,5 +32,7 @@ export const SlotsSchema = new mongoose.Schema({
         default: function () {
             return new Date().getTime()
         }
-    }
+    },
+    slotStatus: Boolean,
+    slotPublished: Boolean
 });

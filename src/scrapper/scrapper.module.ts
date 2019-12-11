@@ -9,7 +9,6 @@ import { BonusesModule } from '../bonuses/bonuses.module';
 import { SlotsModule } from '../slots/slots.module';
 import { ProvidersModule } from '../providers/providers.module';
 import { PaymentMethodsModule } from '../payments/payment-methods.module';
-import { MarkMediaService } from './mark-media.service';
 
 @Module({
   imports: [CasinosModule, BonusesModule, SlotsModule, ProvidersModule, PaymentMethodsModule],
@@ -17,8 +16,7 @@ import { MarkMediaService } from './mark-media.service';
   providers: [
     CasinosAskgamblersService, 
     BonusesAskgamblersService,
-    SlotsAskgamblersService,
-    MarkMediaService
+    SlotsAskgamblersService
   ],
   exports: []
 })

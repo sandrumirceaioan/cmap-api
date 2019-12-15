@@ -38,11 +38,12 @@ export class CasinosService {
     }
 
     async getBest(): Promise<Casino[]> {
-        return await this.casinoModel.find().skip(6).limit(8).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
+        return await this.casinoModel.find().skip(0).limit(8).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
     }
 
     async getAllActive(): Promise<Casino[]> {
-        const casinos = await this.casinoModel.find({ casinoWebsiteUrl: { $ne: "" } });
+        // const casinos = await this.casinoModel.find({ casinoWebsiteUrl: { $ne: "" } });
+        const casinos = await this.casinoModel.find();
         let list = [];
         let uniqueCasinos = casinos.filter((casino) => {
             if (!_.contains(list, casino.casinoName)) {
@@ -111,6 +112,40 @@ export class CasinosService {
                     resolve(response);
                 });
         });
+    }
+
+    async allPaginated(params): Promise<any> {
+        console.log(params);
+        let sort = {};
+        let query = {};
+
+        if (params.search != null) {
+
+            var searchFilter = [];
+            searchFilter.push({ casinoName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+            searchFilter.push({ casinoWebsiteUrl: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+            searchFilter.push({ casinoLogo: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+
+            query['$or'] = searchFilter;
+
+        }
+
+        sort[params.orderBy] = params.orderDir == 'asc' ? 1 : -1;
+
+        let count = await this.casinoModel.count(query);
+        let result: Casino[] = await this.casinoModel.find(query)
+            .limit(parseInt(params.limit))
+            .skip(parseInt(params.skip))
+            .sort(sort)
+            .select('_id casinoLogo casinoName casinoDescription casinoWebsiteUrl casinoCreated casinoReputation casinoPublished');
+
+        return { data: result, count: count };
+    }
+
+    async getOneByIdAdmin(id): Promise<Casino> {
+        let casino = await this.casinoModel.findOne({ _id: new ObjectId(id) });
+        if (!casino) throw new HttpException('Casino not found!', HttpStatus.BAD_REQUEST);
+        return casino;
     }
 
 }

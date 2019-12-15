@@ -60,4 +60,16 @@ export class CasinosController {
         return await this.casinosService.countDashboard();
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/list')
+    async allPaginated(@Query() params) {
+        return this.casinosService.allPaginated(params);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/one')
+    async getOneByIdAdmin(@Query('id') id) {
+        return this.casinosService.getOneByIdAdmin(id);
+    }
+
 }

@@ -9,6 +9,7 @@ import * as Jimp from 'jimp';
 import * as rgb2hex from 'rgb2hex';
 import * as fs from 'fs';
 import { join } from 'path';
+import { promises } from 'dns';
 
 const ObjectId = Types.ObjectId;
 
@@ -20,12 +21,9 @@ export class CasinosService {
     ) { }
 
     onModuleInit() {
-        //this.updateCasinosAndLogos();
+        //this.createCasinoUrl();
     }
 
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     async add(casino): Promise<Casino> {
         let newCasino = new this.casinoModel(casino);
@@ -366,4 +364,35 @@ export class CasinosService {
     //         });
 
     //     });
+    // }
+
+
+    // async convertToSlug(Text) {
+    //     return new Promise((resolve, reject) => {
+    //         let res = Text
+    //             .toLowerCase()
+    //             .replace(/[^\w ]+/g, '')
+    //             .replace(/ +/g, '-')
+    //             ;
+    //         return resolve(res + '-review');
+    //     });
+    // }
+
+    // async createCasinoUrl(): Promise<any> {
+    //     return new Promise(async (resolve, reject) => {
+    //         let casinos = await this.getAll();
+    //         mapLimit(casinos, 1, async (casino) => {
+    //             let slug = await this.convertToSlug(casino.casinoName);
+    //             console.log(slug);
+    //             let updated = await this.updateOneById(casino._id, {casinoUrl: slug})
+    //             if (updated) return Promise.resolve(slug);
+    //         }, (error, result) => {
+    //             if (error) console.log(error);
+    //             console.log(result.length);
+    //         });
+    //     });
+    // }
+
+    // timeout(ms) {
+    //     return new Promise(resolve => setTimeout(resolve, ms));
     // }

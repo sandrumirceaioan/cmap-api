@@ -8,13 +8,13 @@ export interface Casino extends mongoose.Document {
     casinoWebsiteUrl: String; // +++
     casinoLogo: String; // +++
     casinoLogoBg: String; // +++
-    casinoSpecs: Object;
+    casinoSpecs: Object; // +++
     casinoScore: Number;
     casinoReputation: String;
     casinoLanguages: Object
     casinoLiveChat: String;
-    casinoContact: Object;
-    casinoOwner: String;
+    casinoContact: Object; // +++
+    casinoOwner: String; // +++
     casinoEstablished: String;
     casinoWithdrawalLimit: String;
     casinoLicensingAuthorities: Object;

@@ -9,20 +9,20 @@ export interface Casino extends mongoose.Document {
     casinoLogo: String; // +++
     casinoLogoBg: String; // +++
     casinoSpecs: Object; // +++
-    casinoScore: Number;
-    casinoReputation: String;
+    casinoScore: Number; // +++
+    casinoReputation: String; // +++
     casinoLanguages: Object
-    casinoLiveChat: String;
+    casinoLiveChat: String; // +++
     casinoContact: Object; // +++
     casinoOwner: String; // +++
-    casinoEstablished: String;
-    casinoWithdrawalLimit: String;
-    casinoLicensingAuthorities: Object;
+    casinoEstablished: String; // +++
+    casinoWithdrawalLimit: String; // +++
+    casinoLicensingAuthorities: Object; // +++
     casinoBonusesUrl: String;
     casinoRestrictedCountries: Object;
     casinoType: Object;
     casinoAffiliateProgram: Object;
-    casinoRtp: String;
+    casinoRtp: String; // +++
     casinoCurrencies: Object;
     casinoSoftwareProviders: Object;
     casinoDepositMethods: Object;

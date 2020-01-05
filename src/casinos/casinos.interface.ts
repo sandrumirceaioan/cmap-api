@@ -20,7 +20,7 @@ export interface Casino extends mongoose.Document {
     casinoLicensingAuthorities: Object; // +++
     casinoBonusesUrl: String;
     casinoRestrictedCountries: Object;
-    casinoType: Object;
+    casinoType: Object; // +++
     casinoAffiliateProgram: Object;
     casinoRtp: String; // +++
     casinoCurrencies: Object;
@@ -35,6 +35,7 @@ export interface Casino extends mongoose.Document {
     // casinoSlots: [], // new collection
     casinoDescription: String; // +++
     casinoFullDescription: String; // +++
+    casinoCreatedBy: String;
     casinoCreated: Date;
     casinoStatus: Boolean;
     casinoPublished: Boolean;

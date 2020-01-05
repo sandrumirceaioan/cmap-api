@@ -8,6 +8,7 @@ export const ProvidersSchema = new mongoose.Schema({
         type: String,
         default: 'provider-logo.png'
     },
+    providerCreatedBy: String,
     providerCreated: {
         type: Date,
         default: function () {

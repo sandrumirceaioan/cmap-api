@@ -35,6 +35,7 @@ export const CasinosSchema = new mongoose.Schema({
     // casinoSlots: [], // new collection
     casinoDescription: String,
     casinoFullDescription: String,
+    casinoCreatedBy: String,
     casinoCreated: {
         type: Date,
         default: function () {

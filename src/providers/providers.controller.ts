@@ -1,6 +1,10 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards, UseInterceptors, UploadedFile, HttpException, HttpStatus } from '@nestjs/common';
 import { ProvidersService } from './providers.service';
 import { Provider } from './providers.interface';
+import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
 
 @Controller('providers')
 export class ProvidersController {
@@ -16,6 +20,7 @@ export class ProvidersController {
         return response;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('/all')
     async all(@Request() req) {
         return this.providersService.getAll();
@@ -27,10 +32,38 @@ export class ProvidersController {
         return this.providersService.getOneById(id);
     }
 
-    @Put('/update/:id')
-    async updateOneById(@Param('id') id, @Body() params: Provider) {
+    @UseGuards(AuthGuard('jwt'))
+    @UseInterceptors(FileInterceptor('providerLogo', {
+        storage: diskStorage({
+            destination: (req, file, cb) => {
+                cb(null, './assets/providers');
+            },
+            filename: (req, file, cb) => {
+                cb(null, `${file.originalname}`)
+            }
+        }),
+        fileFilter: (req, file, cb) => {
+            let ext = extname(file.originalname);
+            if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+                return cb(new HttpException('Only images are allowed!', HttpStatus.BAD_REQUEST), null);
+            }
+            cb(null, true);
+        },
+    }),
+    )
+    @Put('/update')
+    async updateOneById(@Request() req, @UploadedFile() file) {
+        let updateObject = {
+            providerName: req.body.providerName,
+            providerWebsite: req.body.providerWebsite,
+        };
+
+        if (req.body.providerWebsite != 'null' && file) {
+            updateObject['providerLogo'] = file.originalname;
+        }
+
         let response = {
-            data: await this.providersService.updateOneById(id, params),
+            data: await this.providersService.updateOneById(req.body._id, updateObject),
             message: 'Provider updated!'
         };
         return response;

@@ -12,6 +12,8 @@ import { AffiliatesModule } from './affiliates/affiliates.module';
 import { UsersModule } from './users/users.module';
 import { ProvidersModule } from './providers/providers.module';
 import { PaymentMethodsModule } from './payments/payment-methods.module';
+import { CountriesModule } from './countries/countries.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { PaymentMethodsModule } from './payments/payment-methods.module';
     ScrapperModule,
     UsersModule,
     ProvidersModule,
-    PaymentMethodsModule
+    PaymentMethodsModule,
+    CountriesModule,
+    MulterModule.register()
   ],
   controllers: [AppController],
   providers: [AppService],

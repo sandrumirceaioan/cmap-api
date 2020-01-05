@@ -10,6 +10,7 @@ import * as rgb2hex from 'rgb2hex';
 import * as fs from 'fs';
 import { join } from 'path';
 import { promises } from 'dns';
+import { CountriesService } from '../countries/countries.service';
 
 const ObjectId = Types.ObjectId;
 

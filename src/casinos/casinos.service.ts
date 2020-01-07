@@ -37,7 +37,7 @@ export class CasinosService {
     }
 
     async getBest(): Promise<Casino[]> {
-        return await this.casinoModel.find().skip(0).limit(8).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
+        return await this.casinoModel.find().skip(0).limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
     }
 
     async getAllActive(): Promise<Casino[]> {

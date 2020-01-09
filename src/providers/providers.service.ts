@@ -31,8 +31,8 @@ export class ProvidersService {
     }
 
     async getAll(): Promise<Provider[]> {
-        //return await this.providersModel.find();
-        return await this.providersModel.find({providerLogo: {$eq: 'provider-logo.png'}});
+        return await this.providersModel.find();
+        //return await this.providersModel.find({providerLogo: {$eq: 'provider-logo.png'}});
     }
 
     async getOneById(id): Promise<Provider> {

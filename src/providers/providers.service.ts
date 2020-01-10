@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Provider } from './providers.interface';
 import { mapLimit, parallel } from 'async';
 import * as _ from 'underscore';
-//import { CasinosService } from '../casinos/casinos.service';
+import { CasinosService } from '../casinos/casinos.service';
 
 const ObjectId = Types.ObjectId;
 
@@ -17,7 +17,7 @@ export class ProvidersService {
 
     constructor(
         @InjectModel('Provider') private readonly providersModel: Model<Provider>,
-        //private casinosService: CasinosService
+        private casinosService: CasinosService
     ) { }
 
     timeout(ms) {
@@ -39,6 +39,16 @@ export class ProvidersService {
         let provider = await this.providersModel.findOne({ _id: new ObjectId(id) });
         if (!provider) throw new HttpException('Provider not found!', HttpStatus.BAD_REQUEST);
         return provider;
+    }
+
+    async getManyByCasino(id): Promise<Provider> {
+        let casino = await this.casinosService.deleteOneById(id);
+        let casinoProviders = casino.casinoProviders;
+
+        //mapLimit(casinoProviders);
+
+  
+        return casinoProviders;
     }
 
     async updateOneById(id, params): Promise<any> {

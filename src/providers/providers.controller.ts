@@ -69,10 +69,16 @@ export class ProvidersController {
         return response;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete('/delete/:id')
     async remove(@Param('id') id: string) {
         let deleted = await this.providersService.deleteOneById(id);
         if (deleted) return { message: 'Provider ' + deleted.slotName + ' deleted!' };
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/casino/:id')
+    async getManyByCasino(@Param('id') id) {
+        return this.providersService.getManyByCasino(id);
+    }
 }

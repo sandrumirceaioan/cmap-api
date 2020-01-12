@@ -18,21 +18,16 @@ export interface Casino extends mongoose.Document {
     casinoEstablished: String; // +++
     casinoWithdrawalLimit: String; // +++
     casinoLicensingAuthorities: Object; // +++
-    casinoBonusesUrl: String;
+    casinoBonusesUrl: String; // needed for scrape
     casinoRestrictedCountries: Object;
     casinoType: Object; // +++
-    casinoAffiliateProgram: Object;
+    casinoAffiliateProgram: Object; // +++
     casinoRtp: String; // +++
     casinoCurrencies: Object;
     casinoSoftwareProviders: Object;
     casinoDepositMethods: Object;
     casinoWithdrawalMethods: Object;
     casinoWithdrawalTimes: Object;
-    // casinoBonuses: [],
-    // casinoReviews: [], // new collection
-    // casinoComplaints: [], // new collection
-    // casinoNews: [], // new collection
-    // casinoSlots: [], // new collection
     casinoDescription: String; // +++
     casinoFullDescription: String; // +++
     casinoCreatedBy: String;

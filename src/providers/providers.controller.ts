@@ -77,7 +77,7 @@ export class ProvidersController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('/casino/:id')
+    @Get('/casino')
     async getManyByCasino(@Param('id') id) {
         return this.providersService.getManyByCasino(id);
     }

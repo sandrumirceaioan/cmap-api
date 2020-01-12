@@ -12,7 +12,7 @@ const ObjectId = Types.ObjectId;
 export class ProvidersService {
 
     async onModuleInit() {
-        //this.createProviders();
+        //this.updateCasinosWithProviderLogo();
     }
 
     constructor(
@@ -41,7 +41,13 @@ export class ProvidersService {
         return provider;
     }
 
+    async getOneByName(name): Promise<Provider> {
+        let provider = await this.providersModel.findOne({ providerName: name });
+        return provider;
+    }
+
     async getManyByCasino(id): Promise<Provider> {
+        console.log(id);
         let casino = await this.casinosService.deleteOneById(id);
         let casinoProviders = casino.casinoProviders;
 
@@ -92,6 +98,38 @@ export class ProvidersService {
                     }
                     resolve(response);
                 });
+        });
+    }
+
+    // update casinos with provider logo 
+    async updateCasinosWithProviderLogo(): Promise<any> {
+        return new Promise(async (resolve, reject) => {
+            let casinos: any = await this.casinosService.getAll();
+            mapLimit(casinos, 1, (casino, cb) => {
+                let providers = casino.casinoSoftwareProviders;
+                let providersUpdated = [];
+
+                mapLimit(providers, 1, async (provider) => {
+                    let checkProvider:any = await this.getOneByName(provider.name);
+                    if (checkProvider && checkProvider != 'null') {
+                        provider['logo'] = checkProvider.providerLogo;
+                        provider['website'] = checkProvider.providerWebsite;
+                        providersUpdated.push(provider);
+                    }
+                    return Promise.resolve();
+                }, async (err, res) => {
+                    if (err) console.log('inner ERROR: ', err);
+                    let updateCasino = await this.casinosService.updateOneById(casino._id, {casinoSoftwareProviders: providersUpdated});
+                    console.log(updateCasino.casinoName);
+                    cb();
+                });
+
+            }, (error, result) => {
+                if (error) console.log('main ERROR: ', error);
+                console.log('DONE: ', result.length);
+                return resolve();
+            });
+
         });
     }
 

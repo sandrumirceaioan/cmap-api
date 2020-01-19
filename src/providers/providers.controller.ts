@@ -81,4 +81,10 @@ export class ProvidersController {
     async getManyByCasino(@Param('id') id) {
         return this.providersService.getManyByCasino(id);
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/search')
+    async searchProviders(@Query() params) {
+        return this.providersService.searchProviders(params);
+    }
 }

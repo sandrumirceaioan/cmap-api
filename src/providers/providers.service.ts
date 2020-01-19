@@ -133,6 +133,19 @@ export class ProvidersService {
         });
     }
 
+    async searchProviders(params): Promise<any> {
+        let query = {};
+
+        if (params.search != null) {
+            var searchFilter = [];
+            searchFilter.push({ providerName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+            query['$or'] = searchFilter;
+        }
+
+        let result: Provider[] = await this.providersModel.find(query);
+        return result;
+    }
+
     // // add providers from casino - NOT TESTED
     // async createProviders(): Promise<any> {
     //     return new Promise(async (resolve, reject) => {

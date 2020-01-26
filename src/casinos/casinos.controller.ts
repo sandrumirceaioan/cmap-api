@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { CasinosService } from './casinos.service';
 import { Casino } from './casinos.interface';
 import { AuthGuard } from '@nestjs/passport';
@@ -41,7 +41,7 @@ export class CasinosController {
     async updateOneById(@Param('id') id, @Body() params: Casino) {
         let response = {
             data: await this.casinosService.updateOneById(id, params),
-            message: 'Category updated!'
+            message: 'Casino updated!'
         };
         return response;
     }
@@ -63,13 +63,24 @@ export class CasinosController {
     @UseGuards(AuthGuard('jwt'))
     @Get('/list')
     async allPaginated(@Query() params) {
-        return this.casinosService.allPaginated(params);
+        return await this.casinosService.allPaginated(params);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/one')
     async getOneByIdAdmin(@Query('id') id) {
-        return this.casinosService.getOneByIdAdmin(id);
+        return await this.casinosService.getOneByIdAdmin(id);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/update-payment-methods-data')
+    async updatePaymentMethodsData(@Body() params) {
+        let response = await this.casinosService.updatePaymentMethodsData(params);
+        if (!response) throw new HttpException('Payment methods update data error!', HttpStatus.BAD_REQUEST);
+        return {
+            data: response,
+            message: 'Payment methods updated!'
+        };
     }
 
 }

@@ -37,12 +37,17 @@ export class PaymentMethodsService {
         return paymentMethod;
     }
 
+    async getOneByName(name): Promise<PaymentMethod> {
+        let paymentMethod = await this.paymentMethodsModel.findOne({ paymentMethodName: name });
+        return paymentMethod;
+    }
+
     async updateOneById(id, params): Promise<any> {
         let query = {
             _id: new ObjectId(id)
         };
         let updatedPaymentMethod = await this.paymentMethodsModel.findOneAndUpdate(query, params, { new: true });
-        if (!updatedPaymentMethod) throw new HttpException('Paymen tMethod not updated!', HttpStatus.BAD_REQUEST);
+        if (!updatedPaymentMethod) throw new HttpException('Paymen Method not updated!', HttpStatus.BAD_REQUEST);
         return updatedPaymentMethod;
 
     }
@@ -79,6 +84,19 @@ export class PaymentMethodsService {
                         resolve(response);
                     });
             });
+        }
+
+        async searchPayments(params): Promise<any> {
+            let query = {};
+    
+            if (params.search != null) {
+                var searchFilter = [];
+                searchFilter.push({ paymentMethodName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+                query['$or'] = searchFilter;
+            }
+    
+            let result: PaymentMethod[] = await this.paymentMethodsModel.find(query);
+            return result;
         }
 
 }

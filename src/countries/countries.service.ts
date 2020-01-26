@@ -93,6 +93,19 @@ export class CountriesService {
         });
     }
 
+    async searchCountries(params): Promise<any> {
+        let query = {};
+
+        if (params.search != null) {
+            var searchFilter = [];
+            searchFilter.push({ countryName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+            query['$or'] = searchFilter;
+        }
+
+        let result: Country[] = await this.countryModel.find(query);
+        return result;
+    }
+
     async mapCountries(): Promise<any> {
         return new Promise(async (resolve, reject) => {
             let updatedCasinos = 1;

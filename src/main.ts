@@ -19,6 +19,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname + './../assets/slots/screenshot'));
   app.useStaticAssets(join(__dirname + './../assets/flags'));
   app.useStaticAssets(join(__dirname + './../assets/providers'));
+  app.useStaticAssets(join(__dirname + './../assets/payments'));
   // app.useStaticAssets(join(__dirname + './../assets/slots/logo'), { prefix: "/slots/logo" });
   // app.useStaticAssets(join(__dirname + './../assets/slots/screenshot'), { prefix: "/slots/screenshot" });
   

@@ -11,14 +11,17 @@ import * as fs from 'fs';
 import { join } from 'path';
 import { promises } from 'dns';
 import { CountriesService } from '../countries/countries.service';
+import { PaymentMethodsService } from '../payments/paymet-methods.service';
 
 const ObjectId = Types.ObjectId;
 
 @Injectable()
 export class CasinosService {
+    notFoundMethods: any[] = [];
 
     constructor(
-        @InjectModel('Casino') private readonly casinoModel: Model<Casino>
+        @InjectModel('Casino') private readonly casinoModel: Model<Casino>,
+        private paymentsService: PaymentMethodsService
     ) { }
 
     onModuleInit() {
@@ -145,6 +148,59 @@ export class CasinosService {
         let casino = await this.casinoModel.findOne({ _id: new ObjectId(id) });
         if (!casino) throw new HttpException('Casino not found!', HttpStatus.BAD_REQUEST);
         return casino;
+    }
+
+    async updatePaymentMethodsData(params): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let notFoundMethods = [];
+
+            parallel({
+                deposit: async () => {
+                    let dm = await this.updatePaymentList(params.deposit, 'deposit');
+                    return Promise.resolve(dm);
+                },
+                withdrawal: async () => {
+                    let wm = await this.updatePaymentList(params.withdrawal, 'withdrawal');
+                    return Promise.resolve(wm);
+                },
+                notFound: (cb) => {
+                    cb(null, this.notFoundMethods);
+                }
+            }, (err, result) => {
+                if (err) {
+                    console.log('PARALLEL UPDATE: ', err);
+                    return reject(err);
+                }
+                console.log(result);
+                return resolve(result);
+            });
+        });
+    }
+
+    updatePaymentList(list, type) {
+        return new Promise((resolve, reject) => {
+            mapLimit(list, 1, async (payment) => {
+                let paymentMethod = await this.paymentsService.getOneByName(payment.name);
+                if (!paymentMethod) {
+                    this.notFoundMethods.push({ type: type, data: payment });
+                    return Promise.resolve({
+                        type: type,
+                        found: false,
+                        name: payment.name
+                    });
+                }
+                return Promise.resolve({
+                    name: paymentMethod.paymentMethodName,
+                    logo: paymentMethod.paymentMethodLogo
+                });
+            }, (err, result) => {
+                if (err) {
+                    console.log(`MAP ${type} ERROR: `, err);
+                    return reject();
+                }
+                return resolve(result);
+            });
+        });
     }
 
 }

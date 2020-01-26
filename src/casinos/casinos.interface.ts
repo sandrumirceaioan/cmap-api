@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 export interface Casino extends mongoose.Document {
     casinoName: String; 
     casinoUrl: String;
+    casinoUrlCustom: boolean;
     casinoUrlDetails: String;
     casinoPlayUrl: String,
     casinoWebsiteUrl: String;

@@ -3,6 +3,10 @@ import * as mongoose from 'mongoose';
 export const CasinosSchema = new mongoose.Schema({
     casinoName: String,
     casinoUrl: String,
+    casinoUrlCustom: {
+        type: Boolean,
+        default: false
+    },
     casinoUrlDetails: String,
     casinoPlayUrl: String, // MANUAL AFFILIATE URLS
     casinoWebsiteUrl: String,

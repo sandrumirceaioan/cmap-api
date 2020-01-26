@@ -45,4 +45,10 @@ export class CountriesController {
         if (deleted) return { message: 'Country '+ deleted.countryName +' deleted!' };
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/search')
+    async searchCountries(@Query() params) {
+        return this.countriesService.searchCountries(params);
+    }
+
 }

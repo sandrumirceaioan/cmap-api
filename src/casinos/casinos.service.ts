@@ -40,7 +40,12 @@ export class CasinosService {
     }
 
     async getBest(): Promise<Casino[]> {
-        return await this.casinoModel.find().skip(0).limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation');
+        return await this.casinoModel.find().skip(0).limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation casinoUrl');
+    }
+
+    async getOneByUrl(url): Promise<Casino> {
+        console.log(url);
+        return await this.casinoModel.findOne({ casinoUrl: url });
     }
 
     async getAllActive(): Promise<Casino[]> {

@@ -37,6 +37,13 @@ export class CasinosController {
         return this.casinosService.getOneById(id);
     }
 
+    @Get('/:url')
+    async getOneByUrl(@Param('url') url) {
+        let casino = await this.casinosService.getOneByUrl(url);
+        if (!casino) throw new HttpException('Casino not available.', HttpStatus.BAD_REQUEST);
+        return casino;
+    }
+
     @Put('/update/:id')
     async updateOneById(@Param('id') id, @Body() params: Casino) {
         let response = {

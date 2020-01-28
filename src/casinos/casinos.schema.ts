@@ -23,7 +23,6 @@ export const CasinosSchema = new mongoose.Schema({
     casinoWithdrawalLimit: String,
     casinoLicensingAuthorities: [],
     casinoBonusesUrl: String, // TO BE SCRAPED LATER
-    // casinoBonuses: [],
     casinoRestrictedCountries: [],
     casinoType: [],
     casinoAffiliateProgram: { name: String, url: String }, // TO BE SCRAPPED LATER
@@ -33,10 +32,6 @@ export const CasinosSchema = new mongoose.Schema({
     casinoDepositMethods: [],
     casinoWithdrawalMethods: [],
     casinoWithdrawalTimes: [],
-    // casinoReviews: [], // new collection
-    // casinoComplaints: [], // new collection
-    // casinoNews: [], // new collection
-    // casinoSlots: [], // new collection
     casinoDescription: String,
     casinoFullDescription: String,
     casinoCreatedBy: String,
@@ -47,5 +42,6 @@ export const CasinosSchema = new mongoose.Schema({
         }
     },
     casinoStatus: Boolean,
+    casinoDraft: Boolean,
     casinoPublished: Boolean
 });

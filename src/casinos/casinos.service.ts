@@ -40,12 +40,11 @@ export class CasinosService {
     }
 
     async getBest(): Promise<Casino[]> {
-        return await this.casinoModel.find().skip(0).limit(6).sort({ casinoScore: -1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation casinoUrl');
+        return await this.casinoModel.find({ casinoPublished: true }).skip(0).limit(6).sort({ casinoCreated: 1 }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation casinoUrl');
     }
 
-    async getOneByUrl(url): Promise<Casino> {
-        console.log(url);
-        return await this.casinoModel.findOne({ casinoUrl: url });
+    async getOneByUrl(params): Promise<Casino> {
+        return await this.casinoModel.findOne({ casinoUrl: params.url });
     }
 
     async getAllActive(): Promise<Casino[]> {
@@ -176,7 +175,6 @@ export class CasinosService {
                     console.log('PARALLEL UPDATE: ', err);
                     return reject(err);
                 }
-                console.log(result);
                 return resolve(result);
             });
         });

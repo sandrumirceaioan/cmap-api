@@ -37,20 +37,11 @@ export class CasinosController {
         return this.casinosService.getOneById(id);
     }
 
-    @Get('/:url')
-    async getOneByUrl(@Param('url') url) {
-        let casino = await this.casinosService.getOneByUrl(url);
+    @Get()
+    async getOneByUrl(@Query() params) {
+        let casino = await this.casinosService.getOneByUrl(params);
         if (!casino) throw new HttpException('Casino not available.', HttpStatus.BAD_REQUEST);
         return casino;
-    }
-
-    @Put('/update/:id')
-    async updateOneById(@Param('id') id, @Body() params: Casino) {
-        let response = {
-            data: await this.casinosService.updateOneById(id, params),
-            message: 'Casino updated!'
-        };
-        return response;
     }
 
     @Delete('/delete/:id')
@@ -74,7 +65,7 @@ export class CasinosController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('/one')
+    @Get('/edit')
     async getOneByIdAdmin(@Query('id') id) {
         return await this.casinosService.getOneByIdAdmin(id);
     }
@@ -88,6 +79,16 @@ export class CasinosController {
             data: response,
             message: 'Payment methods updated!'
         };
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/update/:id')
+    async updateOneById(@Param('id') id, @Body() params: Casino) {
+        let response = {
+            data: await this.casinosService.updateOneById(id, params),
+            message: 'Casino updated!'
+        };
+        return response;
     }
 
 }

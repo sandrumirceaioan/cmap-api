@@ -28,11 +28,12 @@ export interface Casino extends mongoose.Document {
     casinoSoftwareProviders: Object;
     casinoDepositMethods: Object;
     casinoWithdrawalMethods: Object;
-    casinoWithdrawalTimes: Object; // ***
+    casinoWithdrawalTimes: Object;
     casinoDescription: String;
     casinoFullDescription: String;
     casinoCreatedBy: String;
     casinoCreated: Date;
     casinoStatus: Boolean;
+    casinoDraft: Boolean;
     casinoPublished: Boolean;
 }

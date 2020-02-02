@@ -40,7 +40,7 @@ export class CasinosController {
     @Get()
     async getOneByUrl(@Query() params) {
         let casino = await this.casinosService.getOneByUrl(params);
-        if (!casino) throw new HttpException('Casino not available.', HttpStatus.BAD_REQUEST);
+        if (!casino) throw new HttpException('Casino not available.', HttpStatus.NOT_FOUND);
         return casino;
     }
 

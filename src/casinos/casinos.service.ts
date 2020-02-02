@@ -25,7 +25,7 @@ export class CasinosService {
     ) { }
 
     onModuleInit() {
-        //this.createCasinoUrl();
+        //this.updateThemeColor();
     }
 
 
@@ -44,7 +44,7 @@ export class CasinosService {
     }
 
     async getOneByUrl(params): Promise<Casino> {
-        return await this.casinoModel.findOne({ casinoUrl: params.url });
+        return await this.casinoModel.findOne({ casinoUrl: params.url }).select('_id casinoName casinoUrl casinoWebsiteUrl casinoLogo casinoLogoBg casinoThemeColor casinoSpecs casinoScore casinoReputation casinoLanguages casinoLiveChat casinoContact casinoOwner casinoEstablished casinoWithdrawalLimit casinoLicensingAuthorities casinoRestrictedCountries casinoType casinoAffiliateProgram casinoRtp casinoCurrencies casinoSoftwareProviders casinoDepositMethods casinoWithdrawalMethods casinoWithdrawalTimes casinoDescription casinoFullDescription casinoCreatedBy casinoCreated casinoStatus');
     }
 
     async getAllActive(): Promise<Casino[]> {
@@ -343,6 +343,26 @@ export class CasinosService {
 //     })
 // }
 
+//update scraped casinos score from string to float
+// async updateThemeColor(): Promise<any> {
+//     return new Promise(async (resolve, reject) => {
+//         let casinos = await this.getAllActive();
+//         console.log(casinos.length);
+
+//         mapLimit(casinos, 1, async (casino) => {
+//             let updated = await this.updateOneById(casino._id, {
+//                 casinoThemeColor: casino.casinoLogoBg
+//             });
+//             if (updated) return Promise.resolve(updated);
+//         }, (error, result) => {
+//             if (error) console.log('ERROR');
+//             console.log('DONE');
+//             return resolve(result);
+//         });
+
+//         return;
+//     })
+// }
 
 
     // // timeout(ms) {

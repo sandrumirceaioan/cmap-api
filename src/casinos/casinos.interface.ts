@@ -1,22 +1,22 @@
 import * as mongoose from 'mongoose';
 
 export interface Casino extends mongoose.Document {
-    casinoName: String; 
-    casinoUrl: String;
+    casinoName: String; ///
+    casinoUrl: String; ///
     casinoUrlCustom: boolean;
     casinoUrlDetails: String;
     casinoPlayUrl: String,
-    casinoWebsiteUrl: String;
-    casinoLogo: String;
-    casinoLogoBg: String;
-    casinoThemeColor: String;
-    casinoSpecs: Object;
-    casinoScore: Number;
-    casinoReputation: String;
+    casinoWebsiteUrl: String; ///
+    casinoLogo: String; ///
+    casinoLogoBg: String; ///
+    casinoThemeColor: String; ///
+    casinoSpecs: Object; ///
+    casinoScore: Number; ///
+    casinoReputation: String; ///
     casinoLanguages: Object
     casinoLiveChat: String;
-    casinoContact: Object;
-    casinoOwner: String;
+    casinoContact: Object; ///
+    casinoOwner: String; ///
     casinoEstablished: String;
     casinoWithdrawalLimit: String;
     casinoLicensingAuthorities: Object;
@@ -30,8 +30,8 @@ export interface Casino extends mongoose.Document {
     casinoDepositMethods: Object;
     casinoWithdrawalMethods: Object;
     casinoWithdrawalTimes: Object;
-    casinoDescription: String;
-    casinoFullDescription: String;
+    casinoDescription: String; ///
+    casinoFullDescription: String; ///
     casinoCreatedBy: String;
     casinoCreated: Date;
     casinoStatus: Boolean;

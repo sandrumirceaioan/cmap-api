@@ -28,6 +28,12 @@ export class BonusesService {
         return await this.bonusModel.aggregate([{$group:{ _id:"$bonusName", casinos: { $addToSet :  "$bonusCasino" }, ids: { $addToSet: "$_id"}}}]);
     }
 
+    async getCasinoBestBonus(params): Promise<any> {
+        let bonus = await this.bonusModel.findOne({bonusCasino: params.casino});
+        console.log(bonus);
+        return bonus;
+    }
+
     async getOneById(id): Promise<Bonus> {
         let bonus = await this.bonusModel.findOne({_id: new ObjectId(id)});
         if (!bonus) throw new HttpException('Bonus not found!', HttpStatus.BAD_REQUEST);

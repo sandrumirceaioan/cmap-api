@@ -5,7 +5,9 @@ import { BonusesService } from './bonuses.service';
 import { BonusesSchema } from './bonuses.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Bonus', schema: BonusesSchema}])],
+  imports: [
+    MongooseModule.forFeature([{name: 'Bonus', schema: BonusesSchema}])
+  ],
   controllers: [BonusesController],
   providers: [BonusesService],
   exports: [BonusesService]

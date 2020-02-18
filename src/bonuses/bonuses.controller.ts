@@ -22,6 +22,10 @@ export class BonusesController {
         return this.bonusesService.getAll();
     }
 
+    @Get('/best')
+    async getCasinoBestBonus(@Query() params) {
+        return this.bonusesService.getCasinoBestBonus(params);
+    }
 
     @Get('/oneById/:id')
     async getOneById(@Param('id') id) {

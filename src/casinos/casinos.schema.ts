@@ -34,6 +34,7 @@ export const CasinosSchema = new mongoose.Schema({
     casinoWithdrawalMethods: [],
     casinoWithdrawalTimes: [],
     casinoDescription: String,
+    casinoMetaDescription: String,
     casinoFullDescription: String,
     casinoCreatedBy: String,
     casinoCreated: {

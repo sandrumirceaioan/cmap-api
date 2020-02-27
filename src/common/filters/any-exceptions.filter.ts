@@ -1,5 +1,4 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-import { MongoError, ValidationError } from 'mongodb';
 
 @Catch()
 export class AnyExceptionsFilter implements ExceptionFilter {

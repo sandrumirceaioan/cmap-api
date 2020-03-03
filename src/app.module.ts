@@ -14,6 +14,7 @@ import { ProvidersModule } from './providers/providers.module';
 import { PaymentMethodsModule } from './payments/payment-methods.module';
 import { CountriesModule } from './countries/countries.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { TemplatesModule } from './templates/templates.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MulterModule } from '@nestjs/platform-express';
     ProvidersModule,
     PaymentMethodsModule,
     CountriesModule,
+    TemplatesModule,
     MulterModule.register()
   ],
   controllers: [AppController],

@@ -47,3 +47,5 @@ export const CasinosSchema = new mongoose.Schema({
     casinoDraft: Boolean,
     casinoPublished: Boolean
 });
+
+CasinosSchema.index({_id: 1, casinoName: 1, casinoUrl: 1}, {unique: true});

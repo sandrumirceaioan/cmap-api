@@ -11,3 +11,5 @@ export const TemplatesSchema = new mongoose.Schema({
         }
     }
 });
+
+TemplatesSchema.index({_id: 1, templateName: 1, templateType: 1}, {unique: true});

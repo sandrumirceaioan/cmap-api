@@ -1,7 +1,9 @@
 import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards, UseInterceptors, HttpException, HttpStatus, UploadedFile } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
 import { Template } from './templates.interface';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('templates')
 export class TemplatesController {
 
@@ -40,6 +42,11 @@ export class TemplatesController {
     async remove(@Param('id') id: string) {
         let deleted = await this.templatesService.deleteOneById(id);
         if (deleted) return { message: 'Template ' + deleted.tamplateName + ' deleted!' };
+    }
+
+    @Get('/grouped')
+    async allGrouped(@Request() req) {
+        return this.templatesService.getAllGrouped();
     }
 
 }

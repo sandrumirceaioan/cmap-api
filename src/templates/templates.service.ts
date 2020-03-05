@@ -11,6 +11,7 @@ const ObjectId = Types.ObjectId;
 export class TemplatesService {
 
     async onModuleInit() {
+        //this.getAllGrouped();
     }
 
     constructor(
@@ -25,6 +26,31 @@ export class TemplatesService {
 
     async getAll(): Promise<Template[]> {
         return await this.templatesModel.find();
+    }
+
+    async getAllGrouped(): Promise<any> {
+        let templates = await this.getAll();
+
+        let group = {
+            intro: [],
+            games: [],
+            payment: [],
+            platform: [],
+            security: []
+        }
+
+        for (let i=0, l=templates.length; i<l; i++) {
+            let type:any = templates[i].templateType;
+            let length = group[type].length;
+            let templateObject = {
+                index: length,
+                name: templates[i].templateName,
+                template: templates[i].templateContent
+            }
+            group[type].push(templateObject);
+        }
+
+        return group;
     }
 
     async getOneById(id): Promise<Template> {

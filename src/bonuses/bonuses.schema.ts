@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export const BonusesSchema = new mongoose.Schema({
     bonusCasino: String,
+    bonusCasinoName: String,
     bonusName: String,
     bonusTerms: String,
     bonusUrl: String,

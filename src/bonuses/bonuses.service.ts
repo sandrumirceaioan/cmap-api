@@ -50,15 +50,6 @@ export class BonusesService {
 
     }
 
-    async deleteOneById(id) {
-        let query = {
-            _id: new ObjectId(id)
-        };
-        let deletedBonus = await this.bonusModel.findByIdAndRemove(query);
-        if (!deletedBonus) throw new HttpException('Bonus not deleted!', HttpStatus.BAD_REQUEST);
-        return deletedBonus;
-    }
-
         /* admin */
 
         async countDashboard(): Promise<any> {
@@ -88,5 +79,52 @@ export class BonusesService {
                         resolve(response);
                     });
             });
+        }
+
+        async allPaginated(params): Promise<any> {
+            console.log(params);
+            let sort = {};
+            let query = {};
+    
+            if (params.search != null) {
+    
+                var searchFilter = [];
+                searchFilter.push({ bonusName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+                searchFilter.push({ bonusCasinoName: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+                searchFilter.push({ bonusType: { $regex: ".*" + params.search + ".*", $options: '-i' } });
+    
+                query['$or'] = searchFilter;
+    
+            }
+    
+            if (params.published != null) {
+                query['bonusPublished'] = params.published;
+            }
+    
+            sort[params.orderBy] = params.orderDir == 'asc' ? 1 : -1;
+    
+            let count = await this.bonusModel.count(query);
+            let result: Bonus[] = await this.bonusModel.find(query)
+                .limit(parseInt(params.limit))
+                .skip(parseInt(params.skip))
+                .sort(sort)
+                .select('_id bonusName bonusCasinoName bonusType bonusStatus bonusCreated');
+    
+            return { data: result, count: count };
+        }
+    
+        async getOneByIdAdmin(id): Promise<Bonus> {
+            let casino = await this.bonusModel.findOne({ _id: new ObjectId(id) });
+            if (!casino) throw new HttpException('Bonus not found!', HttpStatus.BAD_REQUEST);
+            return casino;
+        }
+
+        async deleteOneById(id) {
+            let query = {
+                _id: new ObjectId(id)
+            };
+            let deletedBonus = await this.bonusModel.findByIdAndRemove(query);
+            if (!deletedBonus) throw new HttpException('Bonus not deleted!', HttpStatus.BAD_REQUEST);
+            return deletedBonus;
         }
 }

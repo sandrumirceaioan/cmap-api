@@ -32,27 +32,41 @@ export class BonusesController {
         return this.bonusesService.getOneById(id);
     }
 
-    @Put('/update/:id')
-    async updateOneById(@Param('id') id, @Body() params: Bonus) {
-        let response = {
-            data: await this.bonusesService.updateOneById(id, params),
-            message: 'Bonus updated!'
-        };
-        return response;
-    }
-
-    @Delete('/delete/:id')
-    async remove(@Param('id') id: string) {
-        let deleted = await this.bonusesService.deleteOneById(id);
-        console.log('deleted: ', deleted);
-        if (deleted) return { message: 'Bonus ' + deleted.bonusName + ' deleted!' };
-    }
-
     /* admin routes */
     @UseGuards(AuthGuard('jwt'))
     @Get('/count')
     async countDashboard(@Request() req) {
         return await this.bonusesService.countDashboard();
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/list')
+    async allPaginated(@Query() params) {
+        return await this.bonusesService.allPaginated(params);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('/edit')
+    async getOneByIdAdmin(@Query('id') id) {
+        return await this.bonusesService.getOneByIdAdmin(id);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/update/:id')
+    async updateOneById(@Param('id') id, @Body() params: Bonus) {
+        let response = {
+            data: await this.bonusesService.updateOneById(id, params),
+            message: 'Casino updated!'
+        };
+        return response;
+    }
+    
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('/delete/:id')
+    async remove(@Param('id') id: string) {
+        let deleted = await this.bonusesService.deleteOneById(id);
+        console.log('deleted: ', deleted);
+        if (deleted) return { message: 'Bonus ' + deleted.bonusName + ' deleted!' };
     }
 
 }

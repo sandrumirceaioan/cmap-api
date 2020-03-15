@@ -27,6 +27,8 @@ export const CasinosSchema = new mongoose.Schema({
     casinoRestrictedCountries: [],
     casinoType: [],
     casinoAffiliateProgram: { name: String, url: String }, // TO BE SCRAPPED LATER
+    casinoAffiliateUsername: String,
+    casinoAffiliatePassword: String,
     casinoRtp: String,
     casinoCurrencies: [],
     casinoSoftwareProviders: [], // TO BE SCRAPPED LATER

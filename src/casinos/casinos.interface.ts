@@ -24,6 +24,8 @@ export interface Casino extends mongoose.Document {
     casinoRestrictedCountries: Object;
     casinoType: Object;
     casinoAffiliateProgram: Object;
+    casinoAffiliateUsername: String;
+    casinoAffiliatePassword: String;
     casinoRtp: String;
     casinoCurrencies: Object;
     casinoSoftwareProviders: Object;

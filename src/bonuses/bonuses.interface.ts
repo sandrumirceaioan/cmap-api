@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface Bonus extends mongoose.Document {
     bonusCasino: String;
+    bonusCasinoName: String;
     bonusName: String;
     bonusTerms: String;
     bonusUrl: String;

@@ -34,8 +34,8 @@ export class TemplatesService {
         let group = {
             intro: [],
             games: [],
-            payment: [],
             platform: [],
+            support: [],
             security: []
         }
 

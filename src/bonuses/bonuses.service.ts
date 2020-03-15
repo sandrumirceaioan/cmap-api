@@ -30,7 +30,6 @@ export class BonusesService {
 
     async getCasinoBestBonus(params): Promise<any> {
         let bonus = await this.bonusModel.findOne({bonusCasino: params.casino});
-        console.log(bonus);
         return bonus;
     }
 
@@ -82,7 +81,6 @@ export class BonusesService {
         }
 
         async allPaginated(params): Promise<any> {
-            console.log(params);
             let sort = {};
             let query = {};
     

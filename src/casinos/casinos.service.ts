@@ -44,7 +44,7 @@ export class CasinosService {
     }
 
     async getOneByUrl(params): Promise<Casino> {
-        return await this.casinoModel.findOne({ casinoUrl: params.url }).select('_id casinoName casinoUrl casinoWebsiteUrl casinoLogo casinoLogoBg casinoThemeColor casinoSpecs casinoScore casinoReputation casinoLanguages casinoLiveChat casinoContact casinoOwner casinoEstablished casinoWithdrawalLimit casinoLicensingAuthorities casinoRestrictedCountries casinoType casinoAffiliateProgram casinoRtp casinoCurrencies casinoSoftwareProviders casinoDepositMethods casinoWithdrawalMethods casinoWithdrawalTimes casinoDescription casinoFullDescription casinoMetaDescription casinoCreatedBy casinoCreated casinoStatus');
+        return await this.casinoModel.findOne({ casinoUrl: params.url }).select('_id casinoName casinoUrl casinoWebsiteUrl casinoLogo casinoLogoBg casinoThemeColor casinoSpecs casinoScore casinoReputation casinoLanguages casinoLiveChat casinoContact casinoOwner casinoEstablished casinoWithdrawalLimit casinoLicensingAuthorities casinoRestrictedCountries casinoType casinoAffiliateProgram casinoRtp casinoCurrencies casinoSoftwareProviders casinoDepositMethods casinoWithdrawalMethods casinoWithdrawalTimes casinoDescription casinoFullDescription casinoMetaDescription casinoCreatedBy casinoCreated casinoStatus casinoTermsUrl');
     }
 
     async getAllActive(): Promise<Casino[]> {

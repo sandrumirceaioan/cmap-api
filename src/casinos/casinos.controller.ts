@@ -60,6 +60,13 @@ export class CasinosController {
         return { statusCode: HttpStatus.FOUND, url: newUrl.casinoTermsUrl };
     }
 
+    // @Post('/terms/:url')
+    // async postAuthRequest(@Param('url') url, @Res() response: express.Response) {
+    //     console.log(url);
+    //     const newUrl = await this.casinosService.getCasinoTermsUrl(url);
+    //     return response.redirect(303, newUrl.casinoTermsUrl);
+    // }
+
     /* admin routes */
     @UseGuards(AuthGuard('jwt'))
     @Get('/count')

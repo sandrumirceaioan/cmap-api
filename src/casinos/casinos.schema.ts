@@ -9,6 +9,7 @@ export const CasinosSchema = new mongoose.Schema({
     },
     casinoUrlDetails: String,
     casinoPlayUrl: String, // MANUAL AFFILIATE URLS
+    casinoTermsUrl: String,
     casinoWebsiteUrl: String,
     casinoLogo: String,
     casinoLogoBg: String,

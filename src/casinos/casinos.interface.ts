@@ -6,6 +6,7 @@ export interface Casino extends mongoose.Document {
     casinoUrlCustom: boolean;
     casinoUrlDetails: String;
     casinoPlayUrl: String,
+    casinoTermsUrl: String,
     casinoWebsiteUrl: String; ///
     casinoLogo: String; ///
     casinoLogoBg: String; ///

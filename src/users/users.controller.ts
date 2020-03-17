@@ -31,4 +31,10 @@ export class UsersController {
       return await this.usersService.getOneById(req.user.id);
     }
 
+    @Get()
+    async getCountryByIp(@Query() params) {
+        let country = await this.usersService.getCountryByIp(params);
+        return country;
+    }
+
 }

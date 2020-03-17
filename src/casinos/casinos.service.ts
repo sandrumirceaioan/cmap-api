@@ -89,6 +89,10 @@ export class CasinosService {
         return deletedCasino;
     }
 
+    async getCasinoTermsUrl(url) {
+        return await this.casinoModel.findOne({ casinoUrl: url }).select('casinoTermsUrl');
+    }
+
     /* admin */
 
     async countDashboard(): Promise<any> {

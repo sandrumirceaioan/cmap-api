@@ -44,5 +44,10 @@ export class UsersService {
         return slot;
     }
 
+    async getCountryByIp(ip): Promise<any> {
+        console.log('IP: ', ip);
+        return {country: 'RO'};
+    }
+
 
 }

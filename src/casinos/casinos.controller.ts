@@ -1,7 +1,9 @@
-import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Request, UseGuards, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { CasinosService } from './casinos.service';
 import { Casino } from './casinos.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { Redirect } from '@nestjsplus/redirect';
+import * as express from 'express';
 
 @Controller('casinos')
 export class CasinosController {
@@ -33,7 +35,7 @@ export class CasinosController {
     }
 
     @Get('/oneById/:id')
-    async getOneById(@Param('id') id){
+    async getOneById(@Param('id') id) {
         return this.casinosService.getOneById(id);
     }
 
@@ -48,7 +50,14 @@ export class CasinosController {
     async remove(@Param('id') id: string) {
         let deleted = await this.casinosService.deleteOneById(id);
         console.log('deleted: ', deleted);
-        if (deleted) return { message: 'Casino '+ deleted.casinoName +' deleted!' };
+        if (deleted) return { message: 'Casino ' + deleted.casinoName + ' deleted!' };
+    }
+
+    @Redirect()
+    @Get('/terms/:url')
+    async termsRedirect(@Param('url') url) {
+        const newUrl = await this.casinosService.getCasinoTermsUrl(url);
+        return { statusCode: HttpStatus.FOUND, url: newUrl.casinoTermsUrl };
     }
 
     /* admin routes */

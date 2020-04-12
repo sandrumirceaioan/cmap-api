@@ -10,7 +10,7 @@ export const IpAddress = createParamDecorator(async (data, req) => {
   } else {
     ip = await requestIp.getClientIp(req);
   }
-  console.log('ip');
+  console.log('ip', ip);
   let geo = await geoip.lookup(ip);
   if (geo) return geo;
   return 'N/A';

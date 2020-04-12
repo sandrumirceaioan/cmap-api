@@ -22,7 +22,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname + './../assets/payments'));
   // app.useStaticAssets(join(__dirname + './../assets/slots/logo'), { prefix: "/slots/logo" });
   // app.useStaticAssets(join(__dirname + './../assets/slots/screenshot'), { prefix: "/slots/screenshot" });
-  
+
   await app.listen(parseInt(process.env.PORT) || 3000);
 }
 bootstrap();

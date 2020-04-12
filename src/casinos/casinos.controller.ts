@@ -2,7 +2,6 @@ import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Req
 import { CasinosService } from './casinos.service';
 import { Casino } from './casinos.interface';
 import { AuthGuard } from '@nestjs/passport';
-import { Redirect } from '@nestjsplus/redirect';
 import * as express from 'express';
 
 @Controller('casinos')
@@ -51,13 +50,6 @@ export class CasinosController {
         let deleted = await this.casinosService.deleteOneById(id);
         console.log('deleted: ', deleted);
         if (deleted) return { message: 'Casino ' + deleted.casinoName + ' deleted!' };
-    }
-
-    @Redirect()
-    @Get('/terms/:url')
-    async termsRedirect(@Param('url') url) {
-        const newUrl = await this.casinosService.getCasinoTermsUrl(url);
-        return { statusCode: HttpStatus.FOUND, url: newUrl.casinoTermsUrl };
     }
 
     // @Post('/terms/:url')

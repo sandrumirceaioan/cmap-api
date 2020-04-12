@@ -2,6 +2,7 @@ import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Req
 import { CountriesService } from './countries.service';
 import { Country } from './countries.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { IpAddress } from '../common/decorators/ipAddress.decorator';
 
 @Controller('countries')
 export class CountriesController {
@@ -19,7 +20,8 @@ export class CountriesController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/all')
-    async all(@Request() req) {
+    async all(@Request() req, @IpAddress() ip) {
+        console.log('geo: ', ip);
         return this.countriesService.getAll();
     }
 

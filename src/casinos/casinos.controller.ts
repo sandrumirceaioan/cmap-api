@@ -2,7 +2,7 @@ import { Controller, Post, Get, Put, Body, Query, Param, UseFilters, Delete, Req
 import { CasinosService } from './casinos.service';
 import { Casino } from './casinos.interface';
 import { AuthGuard } from '@nestjs/passport';
-import * as express from 'express';
+import { IpAddress } from '../common/decorators/ipAddress.decorator';
 
 @Controller('casinos')
 export class CasinosController {

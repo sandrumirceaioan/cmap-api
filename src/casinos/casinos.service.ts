@@ -36,7 +36,7 @@ export class CasinosService {
     }
 
     async getAll(): Promise<Casino[]> {
-        return await this.casinoModel.find();
+        return await this.casinoModel.find({ casinoPublished: true }).select('casinoName casinoScore casinoLogo casinoLogoBg casinoReputation casinoUrl casinoMetaDescription');
     }
 
     async getBest(): Promise<Casino[]> {

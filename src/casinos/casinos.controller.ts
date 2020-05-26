@@ -67,6 +67,12 @@ export class CasinosController {
     }
 
     @UseGuards(AuthGuard('jwt'))
+    @Get('/countByReputation')
+    async countByReputation(@Request() req) {
+        return await this.casinosService.countByReputation();
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Get('/list')
     async allPaginated(@Query() params) {
         return await this.casinosService.allPaginated(params);

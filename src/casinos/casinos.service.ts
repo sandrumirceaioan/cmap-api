@@ -214,6 +214,17 @@ export class CasinosService {
         });
     }
 
+    async countByReputation(): Promise<any> {
+        return await this.casinoModel.aggregate([
+            {
+                $group: {
+                    _id: "$casinoReputation",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+    }
+
 }
 
 // used to update reputaion based by score
